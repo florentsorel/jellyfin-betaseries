@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>BetaSeries</title>
+</head>
+<body>
+    <div id="BetaSeriesConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
+        <style>
+            .bs-card {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                padding: 1.25em;
+                margin-bottom: 1em;
+            }
+            .bs-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 0.75em;
+            }
+            .bs-card-title {
+                font-size: 1.2em;
+                font-weight: 600;
+                margin: 0;
+            }
+            .bs-badge {
+                display: inline-block;
+                padding: 0.3em 0.7em;
+                border-radius: 4px;
+                font-size: 0.85em;
+                font-weight: 500;
+            }
+            .bs-badge-success {
+                background: #1b5e20;
+                color: #e8f5e9;
+                border: 1px solid #2e7d32;
+            }
+            .bs-badge-warning {
+                background: #e65100;
+                color: #fff3e0;
+            }
+            .bs-profile-meta {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5em;
+                margin: 0.75em 0;
+                font-size: 0.9em;
+                color: #aaa;
+            }
+            .bs-actions {
+                display: flex;
+                gap: 0.5em;
+                margin-top: 1em;
+            }
+            .bs-editor-modal {
+                background: #1c1c1e;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                border-radius: 10px;
+                padding: 1.5em;
+                margin-top: 1.5em;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            }
+            .bs-section-divider {
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                margin: 1.5em 0 1em 0;
+                padding-top: 1em;
+            }
+            .bs-oauth-box {
+                background: rgba(0, 164, 228, 0.08);
+                border: 1px solid rgba(0, 164, 228, 0.3);
+                border-radius: 8px;
+                padding: 1.25em;
+                margin: 1em 0;
+            }
+            .bs-device-box {
+                background: rgba(0, 164, 228, 0.1);
+                border: 1px solid #00a4dc;
+                border-radius: 8px;
+                padding: 1.5em;
+                margin: 1em 0;
+                text-align: center;
+            }
+            .bs-code-display {
+                font-size: 2.2em;
+                font-weight: 700;
+                letter-spacing: 4px;
+                color: #00a4dc;
+                background: rgba(0, 0, 0, 0.35);
+                padding: 0.3em 0.8em;
+                border-radius: 8px;
+                display: inline-block;
+                margin: 0.6em 0;
+                user-select: all;
+                font-family: monospace;
+            }
+            .bs-device-steps {
+                font-size: 1.05em;
+                margin: 0.5em 0;
+                line-height: 1.6;
+            }
+            .bs-polling-indicator {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.6em;
+                color: #aaa;
+                font-size: 0.95em;
+                margin-top: 0.8em;
+            }
+            .bs-spinner {
+                width: 16px;
+                height: 16px;
+                border: 2px solid rgba(255, 255, 255, 0.2);
+                border-top-color: #00a4dc;
+                border-radius: 50%;
+                animation: bs-spin 1s linear infinite;
+                display: inline-block;
+            }
+            @keyframes bs-spin {
+                to { transform: rotate(360deg); }
+            }
+            .bs-user-checkbox-list {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 0.5em;
+                margin-top: 0.5em;
+            }
+            .bs-redirect-info {
+                background: rgba(0, 164, 228, 0.08);
+                border-left: 3px solid #00a4dc;
+                padding: 0.85em 1.2em;
+                margin: 1em 0;
+                font-size: 0.9em;
+                border-radius: 0 6px 6px 0;
+            }
+        </style>
+
+        <div data-role="content">
+            <div class="content-primary">
+                <h2>Configuration BetaSeries</h2>
+                <p class="fieldDescription">Synchronisez vos visionnages Jellyfin avec vos comptes BetaSeries respectifs.</p>
+
+                <!-- Paramètres généraux API -->
+                <div class="bs-card">
+                    <h3 style="margin-top: 0;">Paramètres de l'Application BetaSeries</h3>
+                    <p class="fieldDescription">
+                        Clé d'application et Secret créés sur
+                        <a href="https://www.betaseries.com/apps/" target="_blank" rel="noopener noreferrer" style="color: #00a4dc; text-decoration: underline;">BetaSeries Développeurs</a>.
+                    </p>
+                    <div class="inputContainer">
+                        <label class="inputLabel" for="txtClientId">Client ID (Clé d'API BetaSeries)</label>
+                        <input id="txtClientId" type="text" is="emby-input" placeholder="Clé d'application (ex: afbf66ac5210)" />
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel" for="txtClientSecret">Client Secret (Secret OAuth)</label>
+                        <input id="txtClientSecret" type="password" is="emby-input" placeholder="Secret OAuth de l'application" />
+                    </div>
+                    <button is="emby-button" type="button" id="btnSaveAppKeys" class="raised emby-button" style="margin-top: 0.5em;">
+                        <span>Enregistrer les paramètres API</span>
+                    </button>
+                </div>
+
+                <!-- Liste des profils -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 2em 0 1em 0;">
+                    <h3 style="margin: 0;">Profils de synchronisation</h3>
+                    <button is="emby-button" type="button" id="btnAddProfile" class="raised button-submit emby-button">
+                        <span>+ Ajouter une configuration</span>
+                    </button>
+                </div>
+
+                <div id="profilesListContainer">
+                    <!-- Les profils seront rendus ici dynamiquement -->
+                </div>
+
+                <!-- Formulaire d'édition d'un profil (masqué par défaut) -->
+                <div id="profileEditor" class="bs-editor-modal" style="display: none;">
+                    <h3 id="editorTitle" style="margin-top: 0;">Configurer un profil</h3>
+
+                    <input type="hidden" id="editProfileId" />
+                    <input type="hidden" id="editProfileToken" />
+                    <input type="hidden" id="editProfileUsername" />
+                    <input type="hidden" id="editProfileUserId" />
+
+                    <!-- Nom du profil -->
+                    <div class="inputContainer">
+                        <label class="inputLabel" for="editProfileName">Nom du profil</label>
+                        <input id="editProfileName" type="text" is="emby-input" placeholder="ex: Profil Florent" required />
+                    </div>
+
+                    <!-- Utilisateurs Jellyfin associés -->
+                    <div class="bs-section-divider">
+                        <h4 style="margin: 0 0 0.5em 0;">Utilisateurs Jellyfin associés</h4>
+                        <div class="fieldDescription">Cochez les utilisateurs Jellyfin concernés par cette synchronisation :</div>
+                        <div id="jellyfinUsersList" class="bs-user-checkbox-list">
+                            <!-- Checkboxes des utilisateurs Jellyfin chargées ici -->
+                        </div>
+                    </div>
+
+                    <!-- Compte BetaSeries (OAuth2) -->
+                    <div class="bs-section-divider">
+                        <h4 style="margin: 0 0 0.5em 0;">Compte BetaSeries associé</h4>
+
+                        <!-- État CONNECTÉ -->
+                        <div id="oauthConnectedInfo" style="display: none; align-items: center; justify-content: space-between;" class="bs-card">
+                            <div style="display: flex; align-items: center;">
+                                <span class="bs-badge bs-badge-success">✓ Connecté</span>
+                                <span style="margin-left: 1em; font-size: 1.1em; font-weight: 600;" id="txtConnectedUsername"></span>
+                            </div>
+                            <button is="emby-button" type="button" id="btnDisconnectBs" class="raised emby-button" style="background: #b71c1c;">
+                                <span>Déconnecter ce compte</span>
+                            </button>
+                        </div>
+
+                        <!-- État NON CONNECTÉ -->
+                        <div id="oauthConnectSection" class="bs-oauth-box">
+                            <p style="margin-top: 0; font-size: 1em;">
+                                Connectez-vous avec votre compte BetaSeries pour lier ce profil :
+                            </p>
+                            <button is="emby-button" type="button" id="btnStartOAuth" class="raised button-submit emby-button" style="padding: 0.8em 1.5em;">
+                                <span>🔗 Se connecter avec BetaSeries (OAuth2)</span>
+                            </button>
+                            <div id="oauthStatusMsg" style="margin-top: 0.8em; font-size: 0.95em; color: #00a4dc; display: none; align-items: center; gap: 0.6em;">
+                                <span class="bs-spinner"></span>
+                                <span id="oauthStatusText">En attente de votre connexion sur BetaSeries...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Événements à synchroniser -->
+                    <div class="bs-section-divider">
+                        <h4 style="margin: 0 0 0.5em 0;">Événements déclencheurs</h4>
+                        <div class="checkboxContainer">
+                            <label class="emby-checkbox-label">
+                                <input id="chkPlaybackStop" type="checkbox" is="emby-checkbox" checked />
+                                <span>Arrêt de lecture (Playback Stop - Scrobble automatique en fin de film / épisode)</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer" style="margin-top: 0.5em;">
+                            <label class="emby-checkbox-label">
+                                <input id="chkUserDataSaved" type="checkbox" is="emby-checkbox" checked />
+                                <span>Marquage manuel comme vu (UserDataSaved - Clic sur le bouton "Vu" dans Jellyfin)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Types de médias -->
+                    <div class="bs-section-divider">
+                        <h4 style="margin: 0 0 0.5em 0;">Types de médias</h4>
+                        <div class="checkboxContainer">
+                            <label class="emby-checkbox-label">
+                                <input id="chkSyncMovies" type="checkbox" is="emby-checkbox" checked />
+                                <span>Films</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer" style="margin-top: 0.5em;">
+                            <label class="emby-checkbox-label">
+                                <input id="chkSyncShows" type="checkbox" is="emby-checkbox" checked />
+                                <span>Séries & Épisodes</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Boutons d'action du formulaire -->
+                    <div class="bs-actions" style="margin-top: 2em; justify-content: flex-end;">
+                        <button is="emby-button" type="button" id="btnCancelEdit" class="raised emby-button">
+                            <span>Annuler</span>
+                        </button>
+                        <button is="emby-button" type="button" id="btnSaveProfile" class="raised button-submit emby-button">
+                            <span>Enregistrer ce profil</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            (function () {
+                var pluginId = '6e4dc05e-3c15-4691-95da-fac65c5c3713';
+                var currentConfig = { ClientId: '', ClientSecret: '', RedirectUri: '', Profiles: [] };
+                var jellyfinUsers = [];
+
+                function getPage() {
+                    return document.querySelector('#BetaSeriesConfigPage');
+                }
+
+                function defaultRedirectUri() {
+                    return window.location.origin + window.location.pathname;
+                }
+
+                function loadData() {
+                    Dashboard.showLoadingMsg();
+
+                    Promise.all([
+                        ApiClient.getPluginConfiguration(pluginId),
+                        ApiClient.getUsers()
+                    ]).then(function (results) {
+                        currentConfig = results[0] || { ClientId: '', ClientSecret: '', RedirectUri: '', Profiles: [] };
+                        if (!currentConfig.Profiles) {
+                            currentConfig.Profiles = [];
+                        }
+                        jellyfinUsers = results[1] || [];
+
+                        // Clés globales
+                        getPage().querySelector('#txtClientId').value = currentConfig.ClientId || '';
+                        getPage().querySelector('#txtClientSecret').value = currentConfig.ClientSecret || '';
+
+                        renderProfilesList();
+                        Dashboard.hideLoadingMsg();
+                    }).catch(function (err) {
+                        Dashboard.hideLoadingMsg();
+                        Dashboard.alert('Erreur lors du chargement : ' + err);
+                    });
+                }
+
+                function renderProfilesList() {
+                    var container = getPage().querySelector('#profilesListContainer');
+                    container.innerHTML = '';
+
+                    if (!currentConfig.Profiles || currentConfig.Profiles.length === 0) {
+                        container.innerHTML = '<div class="bs-card" style="text-align: center; color: #888; padding: 2em;">' +
+                            'Aucun profil de synchronisation configuré.<br/>Cliquez sur <strong>"+ Ajouter une configuration"</strong> ci-dessus pour lier un compte.</div>';
+                        return;
+                    }
+
+                    currentConfig.Profiles.forEach(function (profile, index) {
+                        var card = document.createElement('div');
+                        card.className = 'bs-card';
+
+                        var userNames = [];
+                        if (profile.JellyfinUserIds && profile.JellyfinUserIds.length > 0) {
+                            profile.JellyfinUserIds.forEach(function (uId) {
+                                var found = jellyfinUsers.find(function (u) { return u.Id === uId; });
+                                if (found) userNames.push(found.Name);
+                            });
+                        }
+                        var usersStr = userNames.length > 0 ? userNames.join(', ') : '<em>Aucun utilisateur assigné</em>';
+
+                        var bsStatus = profile.Token
+                            ? '<span class="bs-badge bs-badge-success">✓ Lié à ' + escapeHtml(profile.BetaSeriesUsername || 'BetaSeries') + '</span>'
+                            : '<span class="bs-badge bs-badge-warning">Non connecté</span>';
+
+                        var events = [];
+                        if (profile.ScrobblePlaybackStop) events.push('Arrêt lecture');
+                        if (profile.SyncUserDataSaved) events.push('Marquage manuel');
+
+                        var media = [];
+                        if (profile.SyncMovies) media.push('Films');
+                        if (profile.SyncShows) media.push('Séries');
+
+                        card.innerHTML =
+                            '<div class="bs-card-header">' +
+                                '<h4 class="bs-card-title">' + escapeHtml(profile.Name || 'Profil sans nom') + '</h4>' +
+                                bsStatus +
+                            '</div>' +
+                            '<div class="bs-profile-meta">' +
+                                '<div><strong>Utilisateur(s) Jellyfin :</strong> ' + usersStr + '</div>' +
+                            '</div>' +
+                            '<div class="bs-profile-meta">' +
+                                '<div><strong>Événements :</strong> ' + (events.length ? events.join(', ') : 'Aucun') + '</div>' +
+                                '<div style="margin-left: 1.5em;"><strong>Médias :</strong> ' + (media.length ? media.join(', ') : 'Aucun') + '</div>' +
+                            '</div>' +
+                            '<div class="bs-actions">' +
+                                '<button is="emby-button" type="button" class="raised emby-button btn-edit-profile" data-index="' + index + '">' +
+                                    '<span>Modifier</span>' +
+                                '</button>' +
+                                '<button is="emby-button" type="button" class="raised emby-button btn-delete-profile" data-index="' + index + '" style="background: #c62828;">' +
+                                    '<span>Supprimer</span>' +
+                                '</button>' +
+                            '</div>';
+
+                        container.appendChild(card);
+                    });
+
+                    container.querySelectorAll('.btn-edit-profile').forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            var idx = parseInt(this.getAttribute('data-index'), 10);
+                            openProfileEditor(currentConfig.Profiles[idx]);
+                        });
+                    });
+
+                    container.querySelectorAll('.btn-delete-profile').forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            var idx = parseInt(this.getAttribute('data-index'), 10);
+                            if (confirm('Voulez-vous vraiment supprimer ce profil ?')) {
+                                currentConfig.Profiles.splice(idx, 1);
+                                saveConfiguration(function () {
+                                    renderProfilesList();
+                                });
+                            }
+                        });
+                    });
+                }
+
+                function openProfileEditor(profile) {
+                    var editor = getPage().querySelector('#profileEditor');
+                    editor.style.display = 'block';
+
+                    var isNew = !profile;
+                    profile = profile || {
+                        Id: generateGuid(),
+                        Name: 'Nouveau profil',
+                        JellyfinUserIds: [],
+                        Token: '',
+                        BetaSeriesUsername: '',
+                        ScrobblePlaybackStop: true,
+                        SyncUserDataSaved: true,
+                        SyncMovies: true,
+                        SyncShows: true
+                    };
+
+                    getPage().querySelector('#editorTitle').innerText = isNew ? 'Ajouter une configuration' : 'Modifier le profil';
+                    getPage().querySelector('#editProfileId').value = profile.Id;
+                    getPage().querySelector('#editProfileName').value = profile.Name || '';
+                    getPage().querySelector('#editProfileToken').value = profile.Token || '';
+                    getPage().querySelector('#editProfileUsername').value = profile.BetaSeriesUsername || '';
+                    getPage().querySelector('#editProfileUserId').value = profile.BetaSeriesUserId || '';
+
+                    // Utilisateurs Jellyfin
+                    var usersContainer = getPage().querySelector('#jellyfinUsersList');
+                    usersContainer.innerHTML = '';
+                    jellyfinUsers.forEach(function (u) {
+                        var checked = (profile.JellyfinUserIds || []).indexOf(u.Id) !== -1;
+                        var label = document.createElement('label');
+                        label.className = 'emby-checkbox-label';
+                        label.style.display = 'flex';
+                        label.style.alignItems = 'center';
+                        label.style.gap = '0.5em';
+                        label.innerHTML = '<input type="checkbox" class="chk-jf-user" value="' + u.Id + '" ' + (checked ? 'checked' : '') + ' is="emby-checkbox" /><span>' + escapeHtml(u.Name) + '</span>';
+                        usersContainer.appendChild(label);
+                    });
+
+                    // Événements & Médias
+                    getPage().querySelector('#chkPlaybackStop').checked = profile.ScrobblePlaybackStop !== false;
+                    getPage().querySelector('#chkUserDataSaved').checked = profile.SyncUserDataSaved !== false;
+                    getPage().querySelector('#chkSyncMovies').checked = profile.SyncMovies !== false;
+                    getPage().querySelector('#chkSyncShows').checked = profile.SyncShows !== false;
+
+                    updateOAuthDisplay(profile.Token, profile.BetaSeriesUsername);
+                    editor.scrollIntoView({ behavior: 'smooth' });
+                }
+
+                function updateOAuthDisplay(token, username) {
+                    var connectedBox = getPage().querySelector('#oauthConnectedInfo');
+                    var connectSection = getPage().querySelector('#oauthConnectSection');
+                    var usernameSpan = getPage().querySelector('#txtConnectedUsername');
+                    var statusMsg = getPage().querySelector('#oauthStatusMsg');
+                    if (statusMsg) statusMsg.style.display = 'none';
+
+                    if (token) {
+                        connectedBox.style.display = 'flex';
+                        connectSection.style.display = 'none';
+                        usernameSpan.innerText = username ? username : 'Compte connecté';
+                    } else {
+                        connectedBox.style.display = 'none';
+                        connectSection.style.display = 'block';
+                    }
+                }
+
+                function saveConfiguration(callback) {
+                    Dashboard.showLoadingMsg();
+                    ApiClient.updatePluginConfiguration(pluginId, currentConfig).then(function (result) {
+                        Dashboard.hideLoadingMsg();
+                        if (callback) callback();
+                    }).catch(function (err) {
+                        Dashboard.hideLoadingMsg();
+                        Dashboard.alert('Erreur lors de la sauvegarde : ' + err);
+                    });
+                }
+
+                function escapeHtml(text) {
+                    var div = document.createElement('div');
+                    div.innerText = text;
+                    return div.innerHTML;
+                }
+
+                function generateGuid() {
+                    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                        var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                        return v.toString(16);
+                    });
+                }
+
+                getPage().addEventListener('pageshow', function () {
+                    loadData();
+                });
+
+                // Enregistrer les clés globales
+                getPage().querySelector('#btnSaveAppKeys').addEventListener('click', function () {
+                    currentConfig.ClientId = getPage().querySelector('#txtClientId').value.trim();
+                    currentConfig.ClientSecret = getPage().querySelector('#txtClientSecret').value.trim();
+                    currentConfig.RedirectUri = defaultRedirectUri();
+                    saveConfiguration(function () {
+                        Dashboard.alert('Paramètres API enregistrés avec succès !');
+                    });
+                });
+
+                // Ajouter Profil
+                getPage().querySelector('#btnAddProfile').addEventListener('click', function () {
+                    openProfileEditor(null);
+                });
+
+                // Annuler
+                getPage().querySelector('#btnCancelEdit').addEventListener('click', function () {
+                    stopDevicePolling();
+                    getPage().querySelector('#profileEditor').style.display = 'none';
+                });
+
+                // Déconnecter BetaSeries
+                getPage().querySelector('#btnDisconnectBs').addEventListener('click', function () {
+                    getPage().querySelector('#editProfileToken').value = '';
+                    getPage().querySelector('#editProfileUsername').value = '';
+                    getPage().querySelector('#editProfileUserId').value = '';
+                    updateOAuthDisplay('', '');
+                });
+
+                // FLUX OAUTH2 VIA BETASERIES (Comme tracker-tv)
+                getPage().querySelector('#btnStartOAuth').addEventListener('click', function () {
+                    var clientId = getPage().querySelector('#txtClientId').value.trim() || currentConfig.ClientId;
+                    var clientSecret = getPage().querySelector('#txtClientSecret').value.trim() || currentConfig.ClientSecret;
+                    var redirectUri = defaultRedirectUri();
+
+                    if (!clientId || !clientSecret) {
+                        Dashboard.alert('Veuillez renseigner le Client ID et le Client Secret en haut de la page avant de lier un compte.');
+                        return;
+                    }
+
+                    currentConfig.ClientId = clientId;
+                    currentConfig.ClientSecret = clientSecret;
+                    currentConfig.RedirectUri = redirectUri;
+
+                    var authUrl = 'https://www.betaseries.com/authorize?client_id=' + encodeURIComponent(clientId) +
+                                  '&redirect_uri=' + encodeURIComponent(redirectUri);
+
+                    var statusBox = getPage().querySelector('#oauthStatusMsg');
+                    var statusText = getPage().querySelector('#oauthStatusText');
+                    statusBox.style.display = 'flex';
+                    statusText.innerText = 'Fenêtre de connexion ouverte. En attente de validation sur BetaSeries...';
+
+                    var popup = window.open(authUrl, 'BetaSeriesOAuth', 'width=600,height=750,status=no,resizable=yes');
+
+                    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+                        Dashboard.alert('La fenêtre de connexion a été bloquée par votre navigateur. Veuillez autoriser les popups pour ce site.');
+                        statusBox.style.display = 'none';
+                        return;
+                    }
+
+                    var pollTimer = setInterval(function () {
+                        try {
+                            if (!popup || popup.closed) {
+                                clearInterval(pollTimer);
+                                statusBox.style.display = 'none';
+                                return;
+                            }
+
+                            // Dès que BetaSeries redirige vers l'hôte Jellyfin
+                            if (popup.location.href.indexOf(window.location.origin) === 0) {
+                                var search = popup.location.search;
+                                var hash = popup.location.hash;
+
+                                var code = null;
+                                var error = null;
+
+                                if (search) {
+                                    var sParams = new URLSearchParams(search);
+                                    code = sParams.get('code');
+                                    error = sParams.get('error') || sParams.get('error_description');
+                                }
+                                if (!code && hash && hash.indexOf('code=') !== -1) {
+                                    var hQuery = hash.substring(hash.indexOf('?') !== -1 ? hash.indexOf('?') : hash.indexOf('code='));
+                                    var hParams = new URLSearchParams(hQuery);
+                                    code = hParams.get('code');
+                                    error = hParams.get('error') || hParams.get('error_description');
+                                }
+
+                                if (code || error) {
+                                    clearInterval(pollTimer);
+                                    popup.close();
+
+                                    if (code) {
+                                        statusText.innerText = 'Connexion autorisée ! Récupération du token d\'accès...';
+                                        exchangeOAuthCode(code, clientId, clientSecret, redirectUri);
+                                    } else if (error) {
+                                        statusBox.style.display = 'none';
+                                        Dashboard.alert('Connexion BetaSeries annulée ou refusée : ' + error);
+                                    }
+                                }
+                            }
+                        } catch (e) {
+                            // Cross-origin attendu tant que la popup navigue sur betaseries.com
+                        }
+                    }, 300);
+                });
+
+                // Échange de code calqué sur tracker-tv (/oauth/access_token)
+                function exchangeOAuthCode(code, clientId, clientSecret, redirectUri) {
+                    Dashboard.showLoadingMsg();
+
+                    var formData = new URLSearchParams();
+                    formData.append('client_id', clientId);
+                    formData.append('client_secret', clientSecret);
+                    formData.append('redirect_uri', redirectUri);
+                    formData.append('code', code);
+
+                    fetch('https://api.betaseries.com/oauth/access_token', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-BetaSeries-Key': clientId,
+                            'X-BetaSeries-Version': '3.0'
+                        },
+                        body: formData.toString()
+                    }).then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        if (data.errors && data.errors.length > 0) {
+                            Dashboard.hideLoadingMsg();
+                            getPage().querySelector('#oauthStatusMsg').style.display = 'none';
+                            Dashboard.alert('Erreur BetaSeries : ' + data.errors[0].text);
+                            return;
+                        }
+
+                        var token = data.access_token || data.token;
+                        if (!token) {
+                            Dashboard.hideLoadingMsg();
+                            getPage().querySelector('#oauthStatusMsg').style.display = 'none';
+                            Dashboard.alert('Réponse inattendue de BetaSeries (aucun token reçu).');
+                            return;
+                        }
+
+                        // Récupérer le pseudo du compte connecté (/members/infos comme dans tracker-tv)
+                        fetch('https://api.betaseries.com/members/infos', {
+                            method: 'GET',
+                            headers: {
+                                'X-BetaSeries-Key': clientId,
+                                'X-BetaSeries-Version': '3.0',
+                                'Authorization': 'Bearer ' + token
+                            }
+                        }).then(function (r) { return r.json(); })
+                        .then(function (infoData) {
+                            Dashboard.hideLoadingMsg();
+                            var username = (infoData.member && infoData.member.login) ? infoData.member.login : 'Membre BetaSeries';
+                            var userId = (infoData.member && infoData.member.id) ? infoData.member.id : null;
+
+                            getPage().querySelector('#editProfileToken').value = token;
+                            getPage().querySelector('#editProfileUsername').value = username;
+                            if (userId) getPage().querySelector('#editProfileUserId').value = userId;
+
+                            updateOAuthDisplay(token, username);
+
+                            // Mettre à jour le nom du profil si par défaut
+                            var nameField = getPage().querySelector('#editProfileName');
+                            if (!nameField.value || nameField.value === 'Nouveau profil') {
+                                nameField.value = 'BetaSeries - ' + username;
+                            }
+
+                            Dashboard.alert('Compte lié avec succès : ' + username + ' ! N\'oubliez pas d\'enregistrer le profil.');
+                        }).catch(function () {
+                            Dashboard.hideLoadingMsg();
+                            getPage().querySelector('#editProfileToken').value = token;
+                            updateOAuthDisplay(token, 'Compte lié');
+                        });
+                    }).catch(function (err) {
+                        Dashboard.hideLoadingMsg();
+                        getPage().querySelector('#oauthStatusMsg').style.display = 'none';
+                        Dashboard.alert('Erreur réseau lors de l\'échange du code : ' + err);
+                    });
+                }
+
+                // Enregistrer le profil
+                getPage().querySelector('#btnSaveProfile').addEventListener('click', function () {
+                    var id = getPage().querySelector('#editProfileId').value;
+                    var name = getPage().querySelector('#editProfileName').value.trim();
+                    var token = getPage().querySelector('#editProfileToken').value.trim();
+                    var username = getPage().querySelector('#editProfileUsername').value.trim();
+                    var userId = getPage().querySelector('#editProfileUserId').value.trim();
+
+                    if (!name) {
+                        Dashboard.alert('Veuillez donner un nom à ce profil.');
+                        return;
+                    }
+
+                    var selectedUsers = [];
+                    getPage().querySelectorAll('#jellyfinUsersList .chk-jf-user:checked').forEach(function (chk) {
+                        selectedUsers.push(chk.value);
+                    });
+
+                    var profile = currentConfig.Profiles.find(function (p) { return p.Id === id; });
+                    if (!profile) {
+                        profile = { Id: id };
+                        currentConfig.Profiles.push(profile);
+                    }
+
+                    profile.Name = name;
+                    profile.JellyfinUserIds = selectedUsers;
+                    profile.Token = token;
+                    profile.BetaSeriesUsername = username;
+                    if (userId) profile.BetaSeriesUserId = parseInt(userId, 10);
+                    profile.ScrobblePlaybackStop = getPage().querySelector('#chkPlaybackStop').checked;
+                    profile.SyncUserDataSaved = getPage().querySelector('#chkUserDataSaved').checked;
+                    profile.SyncMovies = getPage().querySelector('#chkSyncMovies').checked;
+                    profile.SyncShows = getPage().querySelector('#chkSyncShows').checked;
+
+                    // Mettre à jour aussi les clés d'API globales si renseignées
+                    var clientId = getPage().querySelector('#txtClientId').value.trim();
+                    var clientSecret = getPage().querySelector('#txtClientSecret').value.trim();
+                    if (clientId) currentConfig.ClientId = clientId;
+                    if (clientSecret) currentConfig.ClientSecret = clientSecret;
+                    currentConfig.RedirectUri = defaultRedirectUri();
+
+                    saveConfiguration(function () {
+                        getPage().querySelector('#profileEditor').style.display = 'none';
+                        renderProfilesList();
+                        Dashboard.alert('Profil "' + name + '" enregistré avec succès !');
+                    });
+                });
+
+            })();
+        </script>
+    </div>
+</body>
+</html>
