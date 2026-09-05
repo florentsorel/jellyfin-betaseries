@@ -1,16 +1,17 @@
 ---
-name: "Template"
-guid: "eb5d7894-8eef-4b36-aa6f-5d124e828ce1"
+name: "BetaSeries"
+guid: "6e4dc05e-3c15-4691-95da-fac65c5c3713"
 version: "1.0.0.0"
 targetAbi: "10.11.0.0"
 framework: "net9.0"
-overview: "Short description about your plugin"
+overview: "Synchronisez vos films et séries avec BetaSeries"
 description: >
-  This is a longer description that can span more than one
-  line and include details about your plugin.
+  Ce plugin Jellyfin permet de synchroniser automatiquement vos visionnages
+  (scrobble et marquage comme vu) avec vos comptes BetaSeries.
 category: "General"
-owner: "jellyfin"
+owner: "florentsorel"
 artifacts:
-- "Jellyfin.Plugin.Template.dll"
+- "Jellyfin.Plugin.BetaSeries.dll"
 changelog: >
-  changelog
+  Initial release
+

@@ -522,6 +522,20 @@ dotnet_diagnostic.IDISP007.severity = suggestion
 # disable warning IDISP008: Don't assign member with injected and created disposables
 dotnet_diagnostic.IDISP008.severity = suggestion
 
+# CSharpier compatibility
+dotnet_diagnostic.SA1000.severity = none
+dotnet_diagnostic.SA1009.severity = none
+dotnet_diagnostic.SA1111.severity = none
+dotnet_diagnostic.SA1118.severity = none
+dotnet_diagnostic.SA1137.severity = none
+dotnet_diagnostic.SA1413.severity = none
+dotnet_diagnostic.SA1500.severity = none
+dotnet_diagnostic.SA1501.severity = none
+dotnet_diagnostic.SA1502.severity = none
+dotnet_diagnostic.SA1504.severity = none
+dotnet_diagnostic.SA1515.severity = none
+dotnet_diagnostic.SA1516.severity = none
+
 [tests/**.{cs,vb}]
 # disable warning SA0001: XML comment analysis is disabled due to project configuration
 dotnet_diagnostic.SA0001.severity = none
