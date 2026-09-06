@@ -1,0 +1,135 @@
+name: '🚀 Release Plugin'
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag version to release (e.g. v1.0.0.0)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: 'Build, Package & Release'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine Version
+        id: version_info
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          VERSION="${TAG#v}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "zip_name=jellyfin-plugin-betaseries_${VERSION}.zip" >> $GITHUB_OUTPUT
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Build Jellyfin Plugin with JPRM
+        uses: oddstr13/jellyfin-plugin-repository-manager@9497a0a499416cc572ed2e07a391d9f943a37b4d # v1.1.1
+        id: jprm
+        with:
+          dotnet-target: 'net9.0'
+
+      - name: Prepare and Checksum Release Zip
+        id: package
+        run: |
+          ZIP_NAME="${{ steps.version_info.outputs.zip_name }}"
+          cp "${{ steps.jprm.outputs.artifact }}" "./${ZIP_NAME}"
+          MD5_HASH=$(md5sum "${ZIP_NAME}" | awk '{print $1}')
+          SHA256_HASH=$(sha256sum "${ZIP_NAME}" | awk '{print $1}')
+          echo "${MD5_HASH}  ${ZIP_NAME}" > "${ZIP_NAME}.md5"
+          echo "${SHA256_HASH}  ${ZIP_NAME}" > "${ZIP_NAME}.sha256"
+          echo "md5=${MD5_HASH}" >> $GITHUB_OUTPUT
+          echo "sha256=${SHA256_HASH}" >> $GITHUB_OUTPUT
+          echo "Release zip: ${ZIP_NAME}"
+          echo "MD5 Checksum: ${MD5_HASH}"
+          echo "SHA256 Checksum: ${SHA256_HASH}"
+
+      - name: Create or Update GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.version_info.outputs.tag }}"
+          ZIP_NAME="${{ steps.version_info.outputs.zip_name }}"
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            echo "Release ${TAG} exists, uploading assets..."
+            gh release upload "${TAG}" "${ZIP_NAME}" "${ZIP_NAME}.md5" "${ZIP_NAME}.sha256" --clobber
+          else
+            echo "Creating new release ${TAG}..."
+            gh release create "${TAG}" \
+              "${ZIP_NAME}" "${ZIP_NAME}.md5" "${ZIP_NAME}.sha256" \
+              --title "Release ${TAG}" \
+              --generate-notes
+          fi
+
+      - name: Update manifest.json on master
+        env:
+          TAG: ${{ steps.version_info.outputs.tag }}
+          VERSION: ${{ steps.version_info.outputs.version }}
+          MD5_HASH: ${{ steps.package.outputs.md5 }}
+          ZIP_NAME: ${{ steps.version_info.outputs.zip_name }}
+        run: |
+          git config user.name "Florent Sorel"
+          git config user.email "florent.sorel@gmail.com"
+
+          # Switch to master branch
+          git fetch origin master
+          git checkout master
+          git pull origin master --rebase
+
+          # Update manifest.json
+          node -e '
+            const fs = require("fs");
+            const manifest = JSON.parse(fs.readFileSync("manifest.json", "utf8"));
+            const version = process.env.VERSION;
+            const tag = process.env.TAG;
+            const md5 = process.env.MD5_HASH;
+            const zipName = process.env.ZIP_NAME;
+            const timestamp = new Date().toISOString();
+
+            const repoUrl = `https://github.com/${process.env.GITHUB_REPOSITORY}/releases/download/${tag}/${zipName}`;
+
+            const plugin = manifest[0];
+            if (!plugin.versions) plugin.versions = [];
+
+            const entry = {
+              version: version,
+              changelog: `Release ${tag}`,
+              targetAbi: "10.11.0.0",
+              sourceUrl: repoUrl,
+              checksum: md5,
+              timestamp: timestamp
+            };
+
+            const idx = plugin.versions.findIndex(v => v.version === version);
+            if (idx >= 0) {
+              plugin.versions[idx] = { ...plugin.versions[idx], ...entry };
+            } else {
+              plugin.versions.unshift(entry);
+            }
+
+            fs.writeFileSync("manifest.json", JSON.stringify(manifest, null, 2) + "\n");
+            console.log("manifest.json successfully updated for version", version);
+          '
+
+          git add manifest.json
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update manifest.json for ${TAG} [skip ci]"
+            git push origin master
+          else
+            echo "No changes to manifest.json needed."
+          fi

@@ -13,6 +13,7 @@ category: "General"
 owner: "Florent Sorel"
 artifacts:
 - "Jellyfin.Plugin.BetaSeries.dll"
+- "betaseries_cover.jpg"
 changelog: >
   Initial release
 
