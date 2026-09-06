@@ -6,10 +6,10 @@ targetAbi: "10.11.0.0"
 framework: "net9.0"
 overview: "Synchronisez vos films et séries avec BetaSeries"
 description: >
-  Ce plugin Jellyfin permet de synchroniser automatiquement vos visionnages
-  (scrobble et marquage comme vu) avec vos comptes BetaSeries.
+  Ce plugin permet de synchroniser automatiquement vos visionnages
+  (scrobble et marquage comme vu) avec vos comptes BetaSeries respectifs.
 category: "General"
-owner: "florentsorel"
+owner: "Florent Sorel"
 artifacts:
 - "Jellyfin.Plugin.BetaSeries.dll"
 changelog: >
