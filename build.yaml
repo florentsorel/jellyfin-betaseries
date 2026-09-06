@@ -4,10 +4,10 @@ guid: "6e4dc05e-3c15-4691-95da-fac65c5c3713"
 version: "1.0.0.0"
 targetAbi: "10.11.0.0"
 framework: "net9.0"
-overview: "Synchronisez vos films et séries avec BetaSeries"
+overview: "Automatically synchronize your movies and series with BetaSeries"
 description: >
-  Ce plugin permet de synchroniser automatiquement vos visionnages
-  (scrobble et marquage comme vu) avec vos comptes BetaSeries respectifs.
+  This plugin automatically synchronizes your movies, series, seasons, and episodes watch status
+  (playback completion scrobble and manual mark as watched/unwatched) with your respective BetaSeries accounts.
 category: "General"
 owner: "Florent Sorel"
 artifacts:

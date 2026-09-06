@@ -2,15 +2,15 @@
   {
     "guid": "6e4dc05e-3c15-4691-95da-fac65c5c3713",
     "name": "BetaSeries",
-    "description": "Synchronisez automatiquement vos visionnages de films, séries, saisons et épisodes avec votre compte BetaSeries.",
-    "overview": "Synchronisez automatiquement vos visionnages de films, séries, saisons et épisodes avec votre compte BetaSeries.",
+    "description": "Automatically synchronize your movies, shows, seasons, and episodes watch status with your BetaSeries account.",
+    "overview": "Automatically synchronize your watch status with BetaSeries.",
     "owner": "Florent Sorel",
     "category": "General",
     "imageUrl": "https://raw.githubusercontent.com/florentsorel/jellyfin-betaseries/master/Jellyfin.Plugin.BetaSeries/betaseries_cover.jpg",
     "versions": [
       {
         "version": "1.0.0.0",
-        "changelog": "Version initiale 1.0.0.0",
+        "changelog": "Initial release 1.0.0.0",
         "targetAbi": "10.11.0.0",
         "sourceUrl": "https://github.com/florentsorel/jellyfin-betaseries/releases/download/v1.0.0.0/jellyfin-plugin-betaseries_1.0.0.0.zip",
         "checksum": "",

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
     <meta charset="utf-8">
     <title>BetaSeries</title>
@@ -139,34 +139,34 @@
 
         <div data-role="content">
             <div class="content-primary">
-                <h2>Configuration BetaSeries</h2>
-                <p class="fieldDescription">Synchronisez vos visionnages avec vos comptes BetaSeries respectifs.</p>
+                <h2 data-i18n="configTitle">Configuration BetaSeries</h2>
+                <p class="fieldDescription" data-i18n="configDescription">Synchronisez vos visionnages avec vos comptes BetaSeries respectifs.</p>
 
                 <!-- Paramètres généraux API -->
                 <div class="bs-card">
-                    <h3 style="margin-top: 0;">Paramètres de l'Application BetaSeries</h3>
-                    <p class="fieldDescription">
+                    <h3 style="margin-top: 0;" data-i18n="appSettingsTitle">Paramètres de l'Application BetaSeries</h3>
+                    <p class="fieldDescription" data-i18n-html="appSettingsDescription">
                         Clé d'application et Secret créés sur
                         <a href="https://www.betaseries.com/en/account/api" target="_blank" rel="noopener noreferrer" style="color: #00a4dc; text-decoration: underline;">BetaSeries Développeurs</a>.
                     </p>
                     <div class="inputContainer">
-                        <label class="inputLabel" for="txtClientId">Client ID (Clé d'API BetaSeries)</label>
-                        <input id="txtClientId" type="text" is="emby-input" placeholder="Clé d'application (ex: afbf66ac5210)" />
+                        <label class="inputLabel" for="txtClientId" data-i18n="lblClientId">Client ID (Clé d'API BetaSeries)</label>
+                        <input id="txtClientId" type="text" is="emby-input" data-i18n-placeholder="placeholderClientId" placeholder="Clé d'application (ex: afbf66ac5210)" />
                     </div>
                     <div class="inputContainer">
-                        <label class="inputLabel" for="txtClientSecret">Client Secret (Secret OAuth)</label>
-                        <input id="txtClientSecret" type="password" is="emby-input" placeholder="Secret OAuth de l'application" />
+                        <label class="inputLabel" for="txtClientSecret" data-i18n="lblClientSecret">Client Secret (Secret OAuth)</label>
+                        <input id="txtClientSecret" type="password" is="emby-input" data-i18n-placeholder="placeholderClientSecret" placeholder="Secret OAuth de l'application" />
                     </div>
                     <button is="emby-button" type="button" id="btnSaveAppKeys" class="raised emby-button" style="margin-top: 0.5em;">
-                        <span>Enregistrer les paramètres API</span>
+                        <span data-i18n="btnSaveApiSettings">Enregistrer les paramètres API</span>
                     </button>
                 </div>
 
                 <!-- Liste des profils -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin: 2em 0 1em 0;">
-                    <h3 style="margin: 0;">Profils de synchronisation</h3>
+                    <h3 style="margin: 0;" data-i18n="profilesTitle">Profils de synchronisation</h3>
                     <button is="emby-button" type="button" id="btnAddProfile" class="raised button-submit emby-button">
-                        <span>+ Ajouter une configuration</span>
+                        <span data-i18n="btnAddProfile">+ Ajouter une configuration</span>
                     </button>
                 </div>
 
@@ -176,7 +176,7 @@
 
                 <!-- Formulaire d'édition d'un profil (masqué par défaut) -->
                 <div id="profileEditor" class="bs-editor-modal" style="display: none;">
-                    <h3 id="editorTitle" style="margin-top: 0;">Configurer un profil</h3>
+                    <h3 id="editorTitle" style="margin-top: 0;" data-i18n="configureProfileTitle">Configurer un profil</h3>
 
                     <input type="hidden" id="editProfileId" />
                     <input type="hidden" id="editProfileToken" />
@@ -185,14 +185,14 @@
 
                     <!-- Nom du profil -->
                     <div class="inputContainer">
-                        <label class="inputLabel" for="editProfileName">Nom du profil</label>
-                        <input id="editProfileName" type="text" is="emby-input" placeholder="ex: Profil Florent" required />
+                        <label class="inputLabel" for="editProfileName" data-i18n="lblProfileName">Nom du profil</label>
+                        <input id="editProfileName" type="text" is="emby-input" data-i18n-placeholder="placeholderProfileName" placeholder="ex: Profil Florent" required />
                     </div>
 
                     <!-- Utilisateurs Jellyfin associés -->
                     <div class="bs-section-divider">
-                        <h4 style="margin: 0 0 0.5em 0;">Utilisateurs Jellyfin associés</h4>
-                        <div class="fieldDescription">Cochez les utilisateurs Jellyfin concernés par cette synchronisation :</div>
+                        <h4 style="margin: 0 0 0.5em 0;" data-i18n="sectionJellyfinUsers">Utilisateurs Jellyfin associés</h4>
+                        <div class="fieldDescription" data-i18n="descJellyfinUsers">Cochez les utilisateurs Jellyfin concernés par cette synchronisation :</div>
                         <div id="jellyfinUsersList" class="bs-user-checkbox-list">
                             <!-- Checkboxes des utilisateurs Jellyfin chargées ici -->
                         </div>
@@ -200,64 +200,64 @@
 
                     <!-- Compte BetaSeries (OAuth2) -->
                     <div class="bs-section-divider">
-                        <h4 style="margin: 0 0 0.5em 0;">Compte BetaSeries associé</h4>
+                        <h4 style="margin: 0 0 0.5em 0;" data-i18n="sectionBetaSeriesAccount">Compte BetaSeries associé</h4>
 
                         <!-- État CONNECTÉ -->
                         <div id="oauthConnectedInfo" style="display: none; align-items: center; justify-content: space-between;" class="bs-card">
                             <div style="display: flex; align-items: center;">
-                                <span class="bs-badge bs-badge-success">✓ Connecté</span>
+                                <span class="bs-badge bs-badge-success" id="badgeConnected">✓ Connecté</span>
                                 <span style="margin-left: 1em; font-size: 1.1em; font-weight: 600;" id="txtConnectedUsername"></span>
                             </div>
                             <button is="emby-button" type="button" id="btnDisconnectBs" class="raised emby-button" style="background: #b71c1c;">
-                                <span>Déconnecter ce compte</span>
+                                <span data-i18n="btnDisconnectAccount">Déconnecter ce compte</span>
                             </button>
                         </div>
 
                         <!-- État NON CONNECTÉ -->
                         <div id="oauthConnectSection" class="bs-oauth-box">
-                            <p style="margin-top: 0; font-size: 1em;">
+                            <p style="margin-top: 0; font-size: 1em;" data-i18n="msgConnectBetaSeries">
                                 Connectez-vous avec votre compte BetaSeries pour lier ce profil :
                             </p>
                             <button is="emby-button" type="button" id="btnStartOAuth" class="raised button-submit emby-button" style="padding: 0.8em 1.5em;">
-                                <span>🔗 Se connecter avec BetaSeries (OAuth2)</span>
+                                <span data-i18n="btnConnectOAuth">🔗 Se connecter avec BetaSeries (OAuth2)</span>
                             </button>
                             <div id="oauthStatusMsg" style="margin-top: 0.8em; font-size: 0.95em; color: #00a4dc; display: none; align-items: center; gap: 0.6em;">
                                 <span class="bs-spinner"></span>
-                                <span id="oauthStatusText">En attente de votre connexion sur BetaSeries...</span>
+                                <span id="oauthStatusText" data-i18n="oauthWaiting">En attente de votre connexion sur BetaSeries...</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Événements à synchroniser -->
                     <div class="bs-section-divider">
-                        <h4 style="margin: 0 0 0.5em 0;">Événements déclencheurs</h4>
+                        <h4 style="margin: 0 0 0.5em 0;" data-i18n="sectionTriggerEvents">Événements déclencheurs</h4>
                         <div class="checkboxContainer">
                             <label class="emby-checkbox-label">
                                 <input id="chkPlaybackStop" type="checkbox" is="emby-checkbox" checked />
-                                <span>Arrêt de lecture (Playback Stop - Scrobble automatique en fin de film / épisode)</span>
+                                <span data-i18n="chkPlaybackStop">Arrêt de lecture (Playback Stop - Scrobble automatique en fin de film / épisode)</span>
                             </label>
                         </div>
                         <div class="checkboxContainer" style="margin-top: 0.5em;">
                             <label class="emby-checkbox-label">
                                 <input id="chkUserDataSaved" type="checkbox" is="emby-checkbox" checked />
-                                <span>Marquage manuel comme vu (UserDataSaved - Clic sur le bouton "Vu" dans Jellyfin)</span>
+                                <span data-i18n="chkUserDataSaved">Marquage manuel comme vu (UserDataSaved - Clic sur le bouton "Vu" dans Jellyfin)</span>
                             </label>
                         </div>
                     </div>
 
                     <!-- Types de médias -->
                     <div class="bs-section-divider">
-                        <h4 style="margin: 0 0 0.5em 0;">Types de médias</h4>
+                        <h4 style="margin: 0 0 0.5em 0;" data-i18n="sectionMediaTypes">Types de médias</h4>
                         <div class="checkboxContainer">
                             <label class="emby-checkbox-label">
                                 <input id="chkSyncMovies" type="checkbox" is="emby-checkbox" checked />
-                                <span>Films</span>
+                                <span data-i18n="chkSyncMovies">Films</span>
                             </label>
                         </div>
                         <div class="checkboxContainer" style="margin-top: 0.5em;">
                             <label class="emby-checkbox-label">
                                 <input id="chkSyncShows" type="checkbox" is="emby-checkbox" checked />
-                                <span>Séries & Épisodes</span>
+                                <span data-i18n="chkSyncShows">Séries & Épisodes</span>
                             </label>
                         </div>
                     </div>
@@ -265,10 +265,10 @@
                     <!-- Boutons d'action du formulaire -->
                     <div class="bs-actions" style="margin-top: 2em; justify-content: flex-end;">
                         <button is="emby-button" type="button" id="btnCancelEdit" class="raised emby-button">
-                            <span>Annuler</span>
+                            <span data-i18n="btnCancel">Annuler</span>
                         </button>
                         <button is="emby-button" type="button" id="btnSaveProfile" class="raised button-submit emby-button">
-                            <span>Enregistrer ce profil</span>
+                            <span data-i18n="btnSaveProfile">Enregistrer ce profil</span>
                         </button>
                     </div>
                 </div>
@@ -281,6 +281,181 @@
                 var currentConfig = { ClientId: '', ClientSecret: '', RedirectUri: '', Profiles: [] };
                 var jellyfinUsers = [];
                 var oauthPollTimer = null;
+
+                var translations = {
+                    fr: {
+                        configTitle: "Configuration BetaSeries",
+                        configDescription: "Synchronisez vos visionnages avec vos comptes BetaSeries respectifs.",
+                        appSettingsTitle: "Paramètres de l'Application BetaSeries",
+                        appSettingsDescription: 'Clé d\'application et Secret créés sur <a href="https://www.betaseries.com/en/account/api" target="_blank" rel="noopener noreferrer" style="color: #00a4dc; text-decoration: underline;">BetaSeries Développeurs</a>.',
+                        lblClientId: "Client ID (Clé d'API BetaSeries)",
+                        placeholderClientId: "Clé d'application (ex: afbf66ac5210)",
+                        lblClientSecret: "Client Secret (Secret OAuth)",
+                        placeholderClientSecret: "Secret OAuth de l'application",
+                        btnSaveApiSettings: "Enregistrer les paramètres API",
+                        profilesTitle: "Profils de synchronisation",
+                        btnAddProfile: "+ Ajouter une configuration",
+                        configureProfileTitle: "Configurer un profil",
+                        addProfileTitle: "Ajouter une configuration",
+                        editProfileTitle: "Modifier le profil",
+                        lblProfileName: "Nom du profil",
+                        placeholderProfileName: "ex: Profil Florent",
+                        defaultNewProfileName: "Nouveau profil",
+                        unnamedProfile: "Profil sans nom",
+                        sectionJellyfinUsers: "Utilisateurs Jellyfin associés",
+                        descJellyfinUsers: "Cochez les utilisateurs Jellyfin concernés par cette synchronisation :",
+                        sectionBetaSeriesAccount: "Compte BetaSeries associé",
+                        badgeConnected: "✓ Connecté",
+                        btnDisconnectAccount: "Déconnecter ce compte",
+                        msgConnectBetaSeries: "Connectez-vous avec votre compte BetaSeries pour lier ce profil :",
+                        btnConnectOAuth: "🔗 Se connecter avec BetaSeries (OAuth2)",
+                        oauthWaiting: "En attente de votre connexion sur BetaSeries...",
+                        oauthWindowOpened: "Fenêtre de connexion ouverte. En attente de validation sur BetaSeries...",
+                        oauthPopupBlocked: "La fenêtre de connexion a été bloquée par votre navigateur. Veuillez autoriser les popups pour ce site.",
+                        oauthCodeReceived: "Connexion autorisée ! Récupération du token d'accès...",
+                        oauthCancelledOrDenied: "Connexion BetaSeries annulée ou refusée : {0}",
+                        oauthMissingKeys: "Veuillez renseigner le Client ID et le Client Secret en haut de la page avant de lier un compte.",
+                        oauthUnexpectedResponse: "Réponse inattendue de BetaSeries (aucun token reçu).",
+                        oauthNetworkError: "Erreur réseau lors de l'échange du code : {0}",
+                        oauthErrorBetaSeries: "Erreur BetaSeries : {0}",
+                        accountLinkedSuccess: "Compte lié avec succès : {0} ! N'oubliez pas d'enregistrer le profil.",
+                        defaultMemberLogin: "Membre BetaSeries",
+                        connectedAccountFallback: "Compte connecté",
+                        sectionTriggerEvents: "Événements déclencheurs",
+                        chkPlaybackStop: "Arrêt de lecture (Playback Stop - Scrobble automatique en fin de film / épisode)",
+                        chkUserDataSaved: "Marquage manuel comme vu (UserDataSaved - Clic sur le bouton \"Vu\" dans Jellyfin)",
+                        sectionMediaTypes: "Types de médias",
+                        chkSyncMovies: "Films",
+                        chkSyncShows: "Séries & Épisodes",
+                        btnCancel: "Annuler",
+                        btnSaveProfile: "Enregistrer ce profil",
+                        noProfilesConfigured: "Aucun profil de synchronisation configuré.<br/>Cliquez sur <strong>\"+ Ajouter une configuration\"</strong> ci-dessus pour lier un compte.",
+                        noUserAssigned: "Aucun utilisateur assigné",
+                        statusLinkedTo: "✓ Lié à {0}",
+                        statusNotConnected: "Non connecté",
+                        eventPlaybackStop: "Arrêt lecture",
+                        eventUserDataSaved: "Marquage manuel",
+                        mediaMovies: "Films",
+                        mediaShows: "Séries",
+                        lblJellyfinUsers: "Utilisateur(s) Jellyfin :",
+                        lblEvents: "Événements :",
+                        lblMedia: "Médias :",
+                        none: "Aucun",
+                        btnEdit: "Modifier",
+                        btnDelete: "Supprimer",
+                        confirmDeleteProfile: "Voulez-vous vraiment supprimer ce profil ?",
+                        loadingError: "Erreur lors du chargement : {0}",
+                        saveError: "Erreur lors de la sauvegarde : {0}",
+                        apiSettingsSaved: "Paramètres API enregistrés avec succès !",
+                        validationProfileNameRequired: "Veuillez donner un nom à ce profil.",
+                        profileSavedSuccess: "Profil \"{0}\" enregistré avec succès !"
+                    },
+                    en: {
+                        configTitle: "BetaSeries Configuration",
+                        configDescription: "Synchronize your watch status with your respective BetaSeries accounts.",
+                        appSettingsTitle: "BetaSeries Application Settings",
+                        appSettingsDescription: 'API Key and Secret created on <a href="https://www.betaseries.com/en/account/api" target="_blank" rel="noopener noreferrer" style="color: #00a4dc; text-decoration: underline;">BetaSeries Developers</a>.',
+                        lblClientId: "Client ID (BetaSeries API Key)",
+                        placeholderClientId: "Application key (e.g. afbf66ac5210)",
+                        lblClientSecret: "Client Secret (OAuth Secret)",
+                        placeholderClientSecret: "Application OAuth secret",
+                        btnSaveApiSettings: "Save API settings",
+                        profilesTitle: "Sync Profiles",
+                        btnAddProfile: "+ Add a profile",
+                        configureProfileTitle: "Configure a profile",
+                        addProfileTitle: "Add a profile",
+                        editProfileTitle: "Edit profile",
+                        lblProfileName: "Profile name",
+                        placeholderProfileName: "e.g. Florent's Profile",
+                        defaultNewProfileName: "New profile",
+                        unnamedProfile: "Unnamed profile",
+                        sectionJellyfinUsers: "Associated Jellyfin Users",
+                        descJellyfinUsers: "Select the Jellyfin users associated with this synchronization:",
+                        sectionBetaSeriesAccount: "Associated BetaSeries Account",
+                        badgeConnected: "✓ Connected",
+                        btnDisconnectAccount: "Disconnect this account",
+                        msgConnectBetaSeries: "Log in with your BetaSeries account to link this profile:",
+                        btnConnectOAuth: "🔗 Connect with BetaSeries (OAuth2)",
+                        oauthWaiting: "Waiting for authorization on BetaSeries...",
+                        oauthWindowOpened: "Login window opened. Waiting for authorization on BetaSeries...",
+                        oauthPopupBlocked: "The login window was blocked by your browser. Please allow popups for this site.",
+                        oauthCodeReceived: "Authorization granted! Retrieving access token...",
+                        oauthCancelledOrDenied: "BetaSeries connection cancelled or denied: {0}",
+                        oauthMissingKeys: "Please enter your Client ID and Client Secret at the top of the page before linking an account.",
+                        oauthUnexpectedResponse: "Unexpected response from BetaSeries (no token received).",
+                        oauthNetworkError: "Network error while exchanging code: {0}",
+                        oauthErrorBetaSeries: "BetaSeries error: {0}",
+                        accountLinkedSuccess: "Account successfully linked: {0}! Don't forget to save the profile.",
+                        defaultMemberLogin: "BetaSeries Member",
+                        connectedAccountFallback: "Connected account",
+                        sectionTriggerEvents: "Trigger Events",
+                        chkPlaybackStop: "Playback Stop (Automatic scrobble when playback finishes)",
+                        chkUserDataSaved: "Manual mark as watched (UserDataSaved - Click on watched icon in Jellyfin)",
+                        sectionMediaTypes: "Media Types",
+                        chkSyncMovies: "Movies",
+                        chkSyncShows: "Series & Episodes",
+                        btnCancel: "Cancel",
+                        btnSaveProfile: "Save this profile",
+                        noProfilesConfigured: "No sync profiles configured.<br/>Click on <strong>\"+ Add a profile\"</strong> above to link an account.",
+                        noUserAssigned: "No user assigned",
+                        statusLinkedTo: "✓ Linked to {0}",
+                        statusNotConnected: "Not connected",
+                        eventPlaybackStop: "Playback stop",
+                        eventUserDataSaved: "Manual mark",
+                        mediaMovies: "Movies",
+                        mediaShows: "Series",
+                        lblJellyfinUsers: "Jellyfin User(s):",
+                        lblEvents: "Events:",
+                        lblMedia: "Media:",
+                        none: "None",
+                        btnEdit: "Edit",
+                        btnDelete: "Delete",
+                        confirmDeleteProfile: "Are you sure you want to delete this profile?",
+                        loadingError: "Error while loading: {0}",
+                        saveError: "Error while saving: {0}",
+                        apiSettingsSaved: "API settings saved successfully!",
+                        validationProfileNameRequired: "Please provide a name for this profile.",
+                        profileSavedSuccess: "Profile \"{0}\" saved successfully!"
+                    }
+                };
+
+                function getLocale() {
+                    var lang = (document.documentElement.getAttribute('lang') ||
+                                document.documentElement.lang ||
+                                (window.navigator && (window.navigator.language || window.navigator.userLanguage)) ||
+                                'en').toLowerCase();
+                    return lang.indexOf('fr') === 0 ? 'fr' : 'en';
+                }
+
+                function t(key, param) {
+                    var locale = getLocale();
+                    var dict = translations[locale] || translations.en;
+                    var str = dict[key] || translations.en[key] || key;
+                    if (param !== undefined && param !== null) {
+                        str = str.replace('{0}', param);
+                    }
+                    return str;
+                }
+
+                function applyStaticTranslations() {
+                    var page = getPage();
+                    if (!page) return;
+
+                    page.querySelectorAll('[data-i18n]').forEach(function (el) {
+                        var key = el.getAttribute('data-i18n');
+                        el.innerText = t(key);
+                    });
+
+                    page.querySelectorAll('[data-i18n-html]').forEach(function (el) {
+                        var key = el.getAttribute('data-i18n-html');
+                        el.innerHTML = t(key);
+                    });
+
+                    page.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+                        var key = el.getAttribute('data-i18n-placeholder');
+                        el.setAttribute('placeholder', t(key));
+                    });
+                }
 
                 function getPage() {
                     return document.querySelector('#BetaSeriesConfigPage');
@@ -307,11 +482,12 @@
                         getPage().querySelector('#txtClientId').value = currentConfig.ClientId || '';
                         getPage().querySelector('#txtClientSecret').value = currentConfig.ClientSecret || '';
 
+                        applyStaticTranslations();
                         renderProfilesList();
                         Dashboard.hideLoadingMsg();
                     }).catch(function (err) {
                         Dashboard.hideLoadingMsg();
-                        Dashboard.alert('Erreur lors du chargement : ' + err);
+                        Dashboard.alert(t('loadingError', err));
                     });
                 }
 
@@ -321,7 +497,7 @@
 
                     if (!currentConfig.Profiles || currentConfig.Profiles.length === 0) {
                         container.innerHTML = '<div class="bs-card" style="text-align: center; color: #888; padding: 2em;">' +
-                            'Aucun profil de synchronisation configuré.<br/>Cliquez sur <strong>"+ Ajouter une configuration"</strong> ci-dessus pour lier un compte.</div>';
+                            t('noProfilesConfigured') + '</div>';
                         return;
                     }
 
@@ -336,38 +512,38 @@
                                 if (found) userNames.push(found.Name);
                             });
                         }
-                        var usersStr = userNames.length > 0 ? userNames.join(', ') : '<em>Aucun utilisateur assigné</em>';
+                        var usersStr = userNames.length > 0 ? escapeHtml(userNames.join(', ')) : '<em>' + t('noUserAssigned') + '</em>';
 
                         var bsStatus = profile.Token
-                            ? '<span class="bs-badge bs-badge-success">✓ Lié à ' + escapeHtml(profile.BetaSeriesUsername || 'BetaSeries') + '</span>'
-                            : '<span class="bs-badge bs-badge-warning">Non connecté</span>';
+                            ? '<span class="bs-badge bs-badge-success">' + escapeHtml(t('statusLinkedTo', profile.BetaSeriesUsername || 'BetaSeries')) + '</span>'
+                            : '<span class="bs-badge bs-badge-warning">' + t('statusNotConnected') + '</span>';
 
                         var events = [];
-                        if (profile.ScrobblePlaybackStop) events.push('Arrêt lecture');
-                        if (profile.SyncUserDataSaved) events.push('Marquage manuel');
+                        if (profile.ScrobblePlaybackStop) events.push(t('eventPlaybackStop'));
+                        if (profile.SyncUserDataSaved) events.push(t('eventUserDataSaved'));
 
                         var media = [];
-                        if (profile.SyncMovies) media.push('Films');
-                        if (profile.SyncShows) media.push('Séries');
+                        if (profile.SyncMovies) media.push(t('mediaMovies'));
+                        if (profile.SyncShows) media.push(t('mediaShows'));
 
                         card.innerHTML =
                             '<div class="bs-card-header">' +
-                                '<h4 class="bs-card-title">' + escapeHtml(profile.Name || 'Profil sans nom') + '</h4>' +
+                                '<h4 class="bs-card-title">' + escapeHtml(profile.Name || t('unnamedProfile')) + '</h4>' +
                                 bsStatus +
                             '</div>' +
                             '<div class="bs-profile-meta">' +
-                                '<div><strong>Utilisateur(s) Jellyfin :</strong> ' + usersStr + '</div>' +
+                                '<div><strong>' + t('lblJellyfinUsers') + '</strong> ' + usersStr + '</div>' +
                             '</div>' +
                             '<div class="bs-profile-meta">' +
-                                '<div><strong>Événements :</strong> ' + (events.length ? events.join(', ') : 'Aucun') + '</div>' +
-                                '<div style="margin-left: 1.5em;"><strong>Médias :</strong> ' + (media.length ? media.join(', ') : 'Aucun') + '</div>' +
+                                '<div><strong>' + t('lblEvents') + '</strong> ' + (events.length ? events.join(', ') : t('none')) + '</div>' +
+                                '<div style="margin-left: 1.5em;"><strong>' + t('lblMedia') + '</strong> ' + (media.length ? media.join(', ') : t('none')) + '</div>' +
                             '</div>' +
                             '<div class="bs-actions">' +
                                 '<button is="emby-button" type="button" class="raised emby-button btn-edit-profile" data-index="' + index + '">' +
-                                    '<span>Modifier</span>' +
+                                    '<span>' + t('btnEdit') + '</span>' +
                                 '</button>' +
                                 '<button is="emby-button" type="button" class="raised emby-button btn-delete-profile" data-index="' + index + '" style="background: #c62828;">' +
-                                    '<span>Supprimer</span>' +
+                                    '<span>' + t('btnDelete') + '</span>' +
                                 '</button>' +
                             '</div>';
 
@@ -384,7 +560,7 @@
                     container.querySelectorAll('.btn-delete-profile').forEach(function (btn) {
                         btn.addEventListener('click', function () {
                             var idx = parseInt(this.getAttribute('data-index'), 10);
-                            if (confirm('Voulez-vous vraiment supprimer ce profil ?')) {
+                            if (confirm(t('confirmDeleteProfile'))) {
                                 currentConfig.Profiles.splice(idx, 1);
                                 saveConfiguration(function () {
                                     renderProfilesList();
@@ -401,7 +577,7 @@
                     var isNew = !profile;
                     profile = profile || {
                         Id: generateGuid(),
-                        Name: 'Nouveau profil',
+                        Name: t('defaultNewProfileName'),
                         JellyfinUserIds: [],
                         Token: '',
                         BetaSeriesUsername: '',
@@ -411,7 +587,7 @@
                         SyncShows: true
                     };
 
-                    getPage().querySelector('#editorTitle').innerText = isNew ? 'Ajouter une configuration' : 'Modifier le profil';
+                    getPage().querySelector('#editorTitle').innerText = isNew ? t('addProfileTitle') : t('editProfileTitle');
                     getPage().querySelector('#editProfileId').value = profile.Id;
                     getPage().querySelector('#editProfileName').value = profile.Name || '';
                     getPage().querySelector('#editProfileToken').value = profile.Token || '';
@@ -447,12 +623,16 @@
                     var connectSection = getPage().querySelector('#oauthConnectSection');
                     var usernameSpan = getPage().querySelector('#txtConnectedUsername');
                     var statusMsg = getPage().querySelector('#oauthStatusMsg');
+                    var badgeConnected = getPage().querySelector('#badgeConnected');
+                    if (badgeConnected) {
+                        badgeConnected.innerText = t('badgeConnected');
+                    }
                     if (statusMsg) statusMsg.style.display = 'none';
 
                     if (token) {
                         connectedBox.style.display = 'flex';
                         connectSection.style.display = 'none';
-                        usernameSpan.innerText = username ? username : 'Compte connecté';
+                        usernameSpan.innerText = username ? username : t('connectedAccountFallback');
                     } else {
                         connectedBox.style.display = 'none';
                         connectSection.style.display = 'block';
@@ -466,7 +646,7 @@
                         if (callback) callback();
                     }).catch(function (err) {
                         Dashboard.hideLoadingMsg();
-                        Dashboard.alert('Erreur lors de la sauvegarde : ' + err);
+                        Dashboard.alert(t('saveError', err));
                     });
                 }
 
@@ -484,6 +664,7 @@
                 }
 
                 getPage().addEventListener('pageshow', function () {
+                    applyStaticTranslations();
                     loadData();
                 });
 
@@ -493,7 +674,7 @@
                     currentConfig.ClientSecret = getPage().querySelector('#txtClientSecret').value.trim();
                     currentConfig.RedirectUri = defaultRedirectUri();
                     saveConfiguration(function () {
-                        Dashboard.alert('Paramètres API enregistrés avec succès !');
+                        Dashboard.alert(t('apiSettingsSaved'));
                     });
                 });
 
@@ -530,7 +711,7 @@
                     var redirectUri = defaultRedirectUri();
 
                     if (!clientId || !clientSecret) {
-                        Dashboard.alert('Veuillez renseigner le Client ID et le Client Secret en haut de la page avant de lier un compte.');
+                        Dashboard.alert(t('oauthMissingKeys'));
                         return;
                     }
 
@@ -544,12 +725,12 @@
                     var statusBox = getPage().querySelector('#oauthStatusMsg');
                     var statusText = getPage().querySelector('#oauthStatusText');
                     statusBox.style.display = 'flex';
-                    statusText.innerText = 'Fenêtre de connexion ouverte. En attente de validation sur BetaSeries...';
+                    statusText.innerText = t('oauthWindowOpened');
 
                     var popup = window.open(authUrl, 'BetaSeriesOAuth', 'width=600,height=750,status=no,resizable=yes');
 
                     if (!popup || popup.closed || typeof popup.closed === 'undefined') {
-                        Dashboard.alert('La fenêtre de connexion a été bloquée par votre navigateur. Veuillez autoriser les popups pour ce site.');
+                        Dashboard.alert(t('oauthPopupBlocked'));
                         statusBox.style.display = 'none';
                         return;
                     }
@@ -594,11 +775,11 @@
                                     popup.close();
 
                                     if (code) {
-                                        statusText.innerText = 'Connexion autorisée ! Récupération du token d\'accès...';
+                                        statusText.innerText = t('oauthCodeReceived');
                                         exchangeOAuthCode(code, clientId, clientSecret, redirectUri);
                                     } else if (error) {
                                         statusBox.style.display = 'none';
-                                        Dashboard.alert('Connexion BetaSeries annulée ou refusée : ' + error);
+                                        Dashboard.alert(t('oauthCancelledOrDenied', error));
                                     }
                                 }
                             }
@@ -631,7 +812,7 @@
                         if (data.errors && data.errors.length > 0) {
                             Dashboard.hideLoadingMsg();
                             getPage().querySelector('#oauthStatusMsg').style.display = 'none';
-                            Dashboard.alert('Erreur BetaSeries : ' + data.errors[0].text);
+                            Dashboard.alert(t('oauthErrorBetaSeries', data.errors[0].text));
                             return;
                         }
 
@@ -639,7 +820,7 @@
                         if (!token) {
                             Dashboard.hideLoadingMsg();
                             getPage().querySelector('#oauthStatusMsg').style.display = 'none';
-                            Dashboard.alert('Réponse inattendue de BetaSeries (aucun token reçu).');
+                            Dashboard.alert(t('oauthUnexpectedResponse'));
                             return;
                         }
 
@@ -654,7 +835,7 @@
                         }).then(function (r) { return r.json(); })
                         .then(function (infoData) {
                             Dashboard.hideLoadingMsg();
-                            var username = (infoData.member && infoData.member.login) ? infoData.member.login : 'Membre BetaSeries';
+                            var username = (infoData.member && infoData.member.login) ? infoData.member.login : t('defaultMemberLogin');
                             var userId = (infoData.member && infoData.member.id) ? infoData.member.id : null;
 
                             getPage().querySelector('#editProfileToken').value = token;
@@ -665,20 +846,20 @@
 
                             // Mettre à jour le nom du profil si par défaut
                             var nameField = getPage().querySelector('#editProfileName');
-                            if (!nameField.value || nameField.value === 'Nouveau profil') {
+                            if (!nameField.value || nameField.value === 'Nouveau profil' || nameField.value === 'New profile') {
                                 nameField.value = 'BetaSeries - ' + username;
                             }
 
-                            Dashboard.alert('Compte lié avec succès : ' + username + ' ! N\'oubliez pas d\'enregistrer le profil.');
+                            Dashboard.alert(t('accountLinkedSuccess', username));
                         }).catch(function () {
                             Dashboard.hideLoadingMsg();
                             getPage().querySelector('#editProfileToken').value = token;
-                            updateOAuthDisplay(token, 'Compte lié');
+                            updateOAuthDisplay(token, t('connectedAccountFallback'));
                         });
                     }).catch(function (err) {
                         Dashboard.hideLoadingMsg();
                         getPage().querySelector('#oauthStatusMsg').style.display = 'none';
-                        Dashboard.alert('Erreur réseau lors de l\'échange du code : ' + err);
+                        Dashboard.alert(t('oauthNetworkError', err));
                     });
                 }
 
@@ -691,7 +872,7 @@
                     var userId = getPage().querySelector('#editProfileUserId').value.trim();
 
                     if (!name) {
-                        Dashboard.alert('Veuillez donner un nom à ce profil.');
+                        Dashboard.alert(t('validationProfileNameRequired'));
                         return;
                     }
 
@@ -726,7 +907,7 @@
                     saveConfiguration(function () {
                         getPage().querySelector('#profileEditor').style.display = 'none';
                         renderProfilesList();
-                        Dashboard.alert('Profil "' + name + '" enregistré avec succès !');
+                        Dashboard.alert(t('profileSavedSuccess', name));
                     });
                 });
 

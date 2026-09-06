@@ -16,121 +16,121 @@
   </a>
 </p>
 
-Ce plugin pour **[Jellyfin](https://jellyfin.org)** synchronise automatiquement vos visionnages de **films**, **séries**, **saisons** et **épisodes** avec votre compte **[BetaSeries](https://www.betaseries.com)**.
+This plugin for **[Jellyfin](https://jellyfin.org)** automatically synchronizes your **movies**, **shows**, **seasons**, and **episodes** watch status with your **[BetaSeries](https://www.betaseries.com)** account.
 
 ---
 
-## 🌟 Fonctionnalités
+## 🌟 Features
 
-- 🔄 **Scrobble automatique à la fin de lecture :**
-  - Dès qu'un épisode ou un film atteint le seuil de complétion défini dans Jellyfin (`PlaybackStopped`), le média est automatiquement marqué comme vu sur votre compte BetaSeries avec la date et l'heure exactes de visionnage (en UTC).
-  - Les lectures interrompues ou partielles sont ignorées en toute sécurité.
+- 🔄 **Automatic Scrobbling on Playback Stop:**
+  - As soon as an episode or movie reaches the completion threshold configured in Jellyfin (`PlaybackStopped`), the item is automatically marked as watched on your BetaSeries account with the exact playback timestamp (in UTC).
+  - Paused or partially watched media items are safely ignored.
 
-- ⚡ **Synchronisation des actions manuelles (Marquer vu / non vu) :**
-  - Si vous marquez manuellement un film ou un épisode comme vu dans l'interface de Jellyfin, il est instantanément synchronisé vers BetaSeries.
-  - Si vous **démarquez** un film ou un épisode dans Jellyfin, il est automatiquement retiré de votre historique BetaSeries (`DELETE`).
-  - **Prise en charge des saisons et séries complètes :** marquer ou démarquer une saison ou une série entière propage l'action sur l'ensemble des épisodes concernés.
+- ⚡ **Manual Sync Actions (Mark Watched / Unwatched):**
+  - Manually marking a movie or episode as watched in Jellyfin immediately synchronizes it to BetaSeries.
+  - **Unmarking** a movie or episode in Jellyfin automatically deletes it from your BetaSeries history (`DELETE`).
+  - **Full Series & Seasons Support:** Marking or unmarking an entire season or show propagates the action to all relevant episodes.
 
-- 🛡️ **Protection de l'historique (`bulk=false`) :**
-  - Les requêtes de marquage d'épisodes sont envoyées avec `bulk=false`. Cela garantit que BetaSeries ne marquera **jamais** les épisodes antérieurs non présents dans votre médiathèque, préservant ainsi fidèlement votre progression et vos dates d'historique.
+- 🛡️ **History Protection (`bulk=false`):**
+  - Episode watch requests are explicitly sent with `bulk=false`. This guarantees that BetaSeries will **never** inadvertently mark missing earlier episodes in your library, faithfully preserving your actual progress and historical watch dates.
 
-- 👥 **Multi-utilisateurs & Multi-comptes :**
-  - Créez autant de profils BetaSeries que nécessaire.
-  - Associez un ou plusieurs utilisateurs Jellyfin à chaque profil BetaSeries (ou associez plusieurs utilisateurs locaux à un même compte partagé).
-  - Chaque profil dispose de ses propres réglages : synchronisation des films, synchronisation des séries, scrobble en direct, synchronisation des clics manuels.
+- 👥 **Multi-User & Multi-Account Management:**
+  - Create as many BetaSeries profiles as needed.
+  - Map one or more Jellyfin users to each BetaSeries profile (or share a single BetaSeries account across multiple local users).
+  - Individual profile settings: toggle movie sync, show sync, live playback scrobble, and manual sync independently.
 
-- 🔀 **Résolution intelligente des métadonnées (Fallbacks) :**
-  - **Films :** recherche par TMDB ID avec repli automatique sur IMDb ID en cas de correspondance manquante ou de code 4001.
-  - **Séries :** recherche par TVDB ID, repli sur IMDb ID, puis repli sur recherche textuelle validée par TMDB ID.
-  - **Épisodes :** recherche directe par TVDB ID de l'épisode ou résolution par saison et numéro d'épisode (SxxExx).
+- 🔀 **Intelligent Metadata Fallbacks:**
+  - **Movies:** lookup via TMDB ID with automatic fallback to IMDb ID for missing matches or HTTP 4001 errors.
+  - **Shows:** lookup via TVDB ID, fallback to IMDb ID, and fallback to title search validated by TMDB ID.
+  - **Episodes:** direct lookup via episode TVDB ID or resolution by season and episode number (SxxExx).
 
-- ⏱️ **Gestion de l'idempotence et anti-rebond (Debounce) :**
-  - Un cache anti-rebond de 30 secondes en mémoire empêche l'envoi de requêtes répétées ou de doublons lors d'événements simultanés.
-  - Les réponses de BetaSeries signalant qu'un média est déjà vu ou déjà démarqué sont traitées gracieusement sans générer d'erreurs.
+- ⏱️ **Debounce & Idempotency Handling:**
+  - An in-memory 30-second debounce cache prevents duplicate or rapid-fire API requests during simultaneous events.
+  - BetaSeries API responses indicating an item is already watched or already unwatched are handled gracefully without generating errors.
 
-- 🔐 **Authentification OAuth2 simplifiée :**
-  - Associez votre compte directement depuis la page de configuration du plugin via une fenêtre popup d'autorisation OAuth2.
-
----
-
-## ⚙️ Prérequis
-
-1. Un serveur **Jellyfin 10.9.0 ou supérieur** (tournant sous .NET 9).
-2. Un compte **[BetaSeries](https://www.betaseries.com)**.
-3. Une clé d'API (Client ID) BetaSeries :
-   - Rendez-vous sur **[https://www.betaseries.com/en/account/api](https://www.betaseries.com/en/account/api)**.
-   - Créez une application pour obtenir votre **Clé d'application** (Client ID) et votre **Secret**.
+- 🔐 **Streamlined OAuth2 Authentication:**
+  - Link your account directly from the plugin configuration page using an OAuth2 popup authorization window.
 
 ---
 
-## 🚀 Configuration dans Jellyfin
+## ⚙️ Prerequisites
 
-1. Dans Jellyfin, accédez au **Tableau de bord** > **Extensions** > **BetaSeries**.
-2. **Paramètres de l'application :**
-   - Renseignez votre **Client ID** (clé d'application).
-   - Renseignez votre **Client Secret** (secret OAuth de l'application).
-   - Cliquez sur **Enregistrer les clés d'application**.
-3. **Ajout d'un profil BetaSeries :**
-   - Cliquez sur **+ Ajouter un profil**.
-   - Donnez un nom au profil (ex : *Mon compte BetaSeries*).
-   - Sélectionnez le ou les utilisateurs Jellyfin associés.
-   - Configurez les options souhaitées (Synchroniser les séries, Synchroniser les films, Scrobbler les lectures terminées, Synchroniser les modifications manuelles).
-   - Cliquez sur **🔗 Se connecter avec BetaSeries (OAuth2)** pour autoriser et associer votre compte via la fenêtre popup.
-   - Cliquez sur **Enregistrer le profil**.
+1. A **Jellyfin server 10.9.0 or higher** (running on .NET 9).
+2. A **[BetaSeries](https://www.betaseries.com)** account.
+3. A BetaSeries API Key (Client ID) & Client Secret:
+   - Go to **[https://www.betaseries.com/en/account/api](https://www.betaseries.com/en/account/api)**.
+   - Register an application to obtain your **Application Key** (Client ID) and **Secret**.
+
+---
+
+## 🚀 Jellyfin Configuration
+
+1. In Jellyfin, navigate to **Dashboard** > **Plugins** > **BetaSeries**.
+2. **Application Settings:**
+   - Enter your **Client ID** (API Key).
+   - Enter your **Client Secret** (OAuth Secret).
+   - Click **Save API settings**.
+3. **Adding a BetaSeries Profile:**
+   - Click **+ Add a profile**.
+   - Enter a name for the profile (e.g., *My BetaSeries Profile*).
+   - Select the associated Jellyfin user(s).
+   - Configure your desired options (Sync series, Sync movies, Scrobble playback stop, Sync manual marks).
+   - Click **🔗 Connect with BetaSeries (OAuth2)** to authorize and link your account via the popup window.
+   - Click **Save this profile**.
 
 ---
 
 ## 📦 Installation
 
-### Méthode 1 : Via le catalogue de dépôts Jellyfin (Recommandé)
+### Method 1: Via Jellyfin Plugin Repository (Recommended)
 
-1. Dans votre interface Jellyfin, allez dans **Tableau de bord** > **Plugins** > onglet **Dépôts**.
-2. Cliquez sur le bouton **+** pour ajouter un nouveau dépôt :
-   - **Nom du dépôt :** `BetaSeries`
-   - **URL du dépôt :** `https://raw.githubusercontent.com/florentsorel/jellyfin-betaseries/master/manifest.json`
-3. Allez dans l'onglet **Catalogue**, sélectionnez **BetaSeries** et cliquez sur **Installer**.
-4. Redémarrez votre serveur Jellyfin.
+1. In your Jellyfin web interface, navigate to **Dashboard** > **Plugins** > **Repositories** tab.
+2. Click the **+** button to add a new repository:
+   - **Repository Name:** `BetaSeries`
+   - **Repository URL:** `https://raw.githubusercontent.com/florentsorel/jellyfin-betaseries/master/manifest.json`
+3. Switch to the **Catalog** tab, find **BetaSeries**, and click **Install**.
+4. Restart your Jellyfin server.
 
-### Méthode 2 : Installation manuelle
+### Method 2: Manual Installation
 
-1. Rendez-vous sur la page des [Releases](https://github.com/florentsorel/jellyfin-betaseries/releases) et téléchargez la dernière version.
-2. Créez un dossier `BetaSeries` dans le répertoire des plugins de votre serveur Jellyfin :
-   - **Linux :** `/var/lib/jellyfin/plugins/BetaSeries/`
-   - **Windows :** `%ProgramData%\Jellyfin\Server\plugins\BetaSeries\`
-   - **Docker :** `/config/plugins/BetaSeries/`
-3. Déposez-y les fichiers `Jellyfin.Plugin.BetaSeries.dll` et `betaseries_cover.jpg`.
-4. Redémarrez le serveur Jellyfin :
+1. Head to the [Releases](https://github.com/florentsorel/jellyfin-betaseries/releases) page and download the latest release archive.
+2. Create a `BetaSeries` directory inside your Jellyfin plugins folder:
+   - **Linux:** `/var/lib/jellyfin/plugins/BetaSeries/`
+   - **Windows:** `%ProgramData%\Jellyfin\Server\plugins\BetaSeries\`
+   - **Docker:** `/config/plugins/BetaSeries/`
+3. Extract `Jellyfin.Plugin.BetaSeries.dll` and `betaseries_cover.jpg` into that folder.
+4. Restart the Jellyfin server:
    ```bash
    sudo systemctl restart jellyfin
    ```
 
 ---
 
-## 🛠️ Développement et Tests
+## 🛠️ Development & Testing
 
-### Compilation
+### Build
 
 ```bash
-# Compilation en mode Release
+# Build in Release mode
 dotnet build -c Release
 ```
 
-### Lancement de la suite de tests
+### Running Tests
 
-Le projet inclut une suite complète de tests unitaires (xUnit, Moq) isolant tous les flux HTTP via un mock hermétique (`MockHttpMessageHandler`) :
+The project includes a comprehensive unit test suite (xUnit, Moq) that isolates all HTTP interactions through a hermetic mock handler (`MockHttpMessageHandler`):
 
 ```bash
-# Exécution de tous les tests unitaires
+# Run all unit tests
 dotnet test
 ```
 
-Périmètre couvert par les tests :
-- Validation des réglages et profils (`PluginConfiguration`, sérialisation XML).
-- Client API (`BetaSeriesClient`) : résolution de films, séries, épisodes, scrobble avec date UTC, `bulk=false`, démarquage, gestion des codes 4001 et erreurs HTTP.
-- Gestionnaire d'événements (`BetaSeriesManager`) : écoute `PlaybackStopped`, gestion `UserDataSaved`, filtrage des doublons `PlaybackFinished`, anti-rebond mémoire, traitement des saisons et séries complètes.
+Test coverage includes:
+- Configuration and profile validation (`PluginConfiguration`, XML serialization).
+- API Client (`BetaSeriesClient`): movie, show, and episode resolution, scrobbling with UTC timestamp, `bulk=false`, unmarking, handling of 4001 error codes and HTTP errors.
+- Event Manager (`BetaSeriesManager`): listening to `PlaybackStopped`, handling `UserDataSaved`, filtering duplicate `PlaybackFinished` events, in-memory debouncing, and processing full seasons and shows.
 
 ---
 
-## 📄 Licence
+## 📄 License
 
-Ce projet est distribué sous licence [GPL-3.0](LICENSE).
+This project is licensed under the terms of the [GPL-3.0](LICENSE) license.
