@@ -280,6 +280,7 @@
                 var pluginId = '6e4dc05e-3c15-4691-95da-fac65c5c3713';
                 var currentConfig = { ClientId: '', ClientSecret: '', RedirectUri: '', Profiles: [] };
                 var jellyfinUsers = [];
+                var oauthPollTimer = null;
 
                 function getPage() {
                     return document.querySelector('#BetaSeriesConfigPage');
@@ -503,7 +504,14 @@
 
                 // Annuler
                 getPage().querySelector('#btnCancelEdit').addEventListener('click', function () {
-                    stopDevicePolling();
+                    if (oauthPollTimer) {
+                        clearInterval(oauthPollTimer);
+                        oauthPollTimer = null;
+                    }
+                    var statusBox = getPage().querySelector('#oauthStatusMsg');
+                    if (statusBox) {
+                        statusBox.style.display = 'none';
+                    }
                     getPage().querySelector('#profileEditor').style.display = 'none';
                 });
 
@@ -546,10 +554,16 @@
                         return;
                     }
 
-                    var pollTimer = setInterval(function () {
+                    if (oauthPollTimer) {
+                        clearInterval(oauthPollTimer);
+                        oauthPollTimer = null;
+                    }
+
+                    oauthPollTimer = setInterval(function () {
                         try {
                             if (!popup || popup.closed) {
-                                clearInterval(pollTimer);
+                                clearInterval(oauthPollTimer);
+                                oauthPollTimer = null;
                                 statusBox.style.display = 'none';
                                 return;
                             }
@@ -575,7 +589,8 @@
                                 }
 
                                 if (code || error) {
-                                    clearInterval(pollTimer);
+                                    clearInterval(oauthPollTimer);
+                                    oauthPollTimer = null;
                                     popup.close();
 
                                     if (code) {
