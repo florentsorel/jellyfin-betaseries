@@ -49,7 +49,7 @@ Ce plugin pour **[Jellyfin](https://jellyfin.org)** synchronise automatiquement 
   - Les réponses de BetaSeries signalant qu'un média est déjà vu ou déjà démarqué sont traitées gracieusement sans générer d'erreurs.
 
 - 🔐 **Authentification OAuth2 simplifiée :**
-  - Associez votre compte directement depuis la page de configuration du plugin via une fenêtre popup d'autorisation ou via un code de vérification à 6 chiffres.
+  - Associez votre compte directement depuis la page de configuration du plugin via une fenêtre popup d'autorisation OAuth2.
 
 ---
 
@@ -68,14 +68,14 @@ Ce plugin pour **[Jellyfin](https://jellyfin.org)** synchronise automatiquement 
 1. Dans Jellyfin, accédez au **Tableau de bord** > **Extensions** > **BetaSeries**.
 2. **Paramètres de l'application :**
    - Renseignez votre **Client ID** (clé d'application).
-   - *(Optionnel)* Renseignez votre **Client Secret** si vous souhaitez utiliser le flux OAuth complet.
+   - Renseignez votre **Client Secret** (secret OAuth de l'application).
    - Cliquez sur **Enregistrer les clés d'application**.
 3. **Ajout d'un profil BetaSeries :**
    - Cliquez sur **+ Ajouter un profil**.
    - Donnez un nom au profil (ex : *Mon compte BetaSeries*).
    - Sélectionnez le ou les utilisateurs Jellyfin associés.
    - Configurez les options souhaitées (Synchroniser les séries, Synchroniser les films, Scrobbler les lectures terminées, Synchroniser les modifications manuelles).
-   - Cliquez sur **Connecter avec BetaSeries** pour autoriser le compte via OAuth2, ou collez directement votre token membre si vous en possédez un.
+   - Cliquez sur **🔗 Se connecter avec BetaSeries (OAuth2)** pour autoriser et associer votre compte via la fenêtre popup.
    - Cliquez sur **Enregistrer le profil**.
 
 ---
@@ -117,7 +117,7 @@ dotnet build -c Release
 
 ### Lancement de la suite de tests
 
-Le projet inclut une suite complète de **32 tests unitaires** (xUnit, Moq) isolant tous les flux HTTP via un mock hermétique (`MockHttpMessageHandler`) :
+Le projet inclut une suite complète de tests unitaires (xUnit, Moq) isolant tous les flux HTTP via un mock hermétique (`MockHttpMessageHandler`) :
 
 ```bash
 # Exécution de tous les tests unitaires
@@ -128,12 +128,6 @@ Périmètre couvert par les tests :
 - Validation des réglages et profils (`PluginConfiguration`, sérialisation XML).
 - Client API (`BetaSeriesClient`) : résolution de films, séries, épisodes, scrobble avec date UTC, `bulk=false`, démarquage, gestion des codes 4001 et erreurs HTTP.
 - Gestionnaire d'événements (`BetaSeriesManager`) : écoute `PlaybackStopped`, gestion `UserDataSaved`, filtrage des doublons `PlaybackFinished`, anti-rebond mémoire, traitement des saisons et séries complètes.
-
----
-
-## 👤 Auteur
-
-- **Florent Sorel** ([@florentsorel](https://github.com/florentsorel)) - <florent.sorel@gmail.com>
 
 ---
 
