@@ -1,6 +1,6 @@
 #!/bin/bash
 
 dotnet publish Jellyfin.Plugin.BetaSeries -c Release -o ./publish && \
-scp ./publish/Jellyfin.Plugin.BetaSeries.dll root@192.168.1.120:/var/lib/jellyfin/plugins/BetaSeries/ && \
+scp ./publish/Jellyfin.Plugin.BetaSeries.dll ./publish/betaseries_cover.jpg root@192.168.1.120:/var/lib/jellyfin/plugins/BetaSeries/ && \
 ssh root@192.168.1.120 "rm -f /var/lib/jellyfin/plugins/BetaSeries/Jellyfin.Plugin.Template.dll && chown -R jellyfin:jellyfin /var/lib/jellyfin/plugins/BetaSeries && systemctl restart jellyfin"
 

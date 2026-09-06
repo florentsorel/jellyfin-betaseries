@@ -535,7 +535,11 @@ public class BetaSeriesManagerTests
             _userDataManagerMock.Raise(u => u.UserDataSaved += null, args);
         }
 
-        await Task.Delay(400);
+        var deadline = DateTime.UtcNow.AddSeconds(2);
+        while (mockHandler.Requests.Count < 6 && DateTime.UtcNow < deadline)
+        {
+            await Task.Delay(25);
+        }
 
         // 3 lookups + 3 scrobbles = 6 requests
         Assert.Equal(6, mockHandler.Requests.Count);
