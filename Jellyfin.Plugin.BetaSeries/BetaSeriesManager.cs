@@ -341,20 +341,42 @@ public class BetaSeriesManager : IHostedService, IDisposable
         var seriesImdbId = series?.GetProviderId(MetadataProvider.Imdb);
         var seriesTmdbId = series?.GetProviderId(MetadataProvider.Tmdb);
 
-        int showId = 0;
-        if (!string.IsNullOrWhiteSpace(seriesTvdbId) || !string.IsNullOrWhiteSpace(seriesImdbId) || !string.IsNullOrWhiteSpace(seriesTitle))
+        int? episodeId = null;
+
+        // 1. Direct lookup by episode TVDB ID if available
+        if (!string.IsNullOrWhiteSpace(episodeTvdbId))
         {
-            var foundShowId = await _client.FindShowIdAsync(clientId, profile.Token, seriesTvdbId, seriesImdbId, seriesTitle, seriesTmdbId).ConfigureAwait(false);
-            showId = foundShowId ?? 0;
+            episodeId = await _client.FindEpisodeIdAsync(
+                clientId,
+                profile.Token,
+                showId: 0,
+                seasonNum,
+                episodeNum,
+                episodeTvdbId).ConfigureAwait(false);
         }
 
-        var episodeId = await _client.FindEpisodeIdAsync(
-            clientId,
-            profile.Token,
-            showId,
-            seasonNum,
-            episodeNum,
-            episodeTvdbId).ConfigureAwait(false);
+        // 2. Fallback: resolve show ID and find episode within the show
+        if (!episodeId.HasValue)
+        {
+            var lookupTitle = series?.Name ?? episode.SeriesName;
+            int showId = 0;
+            if (!string.IsNullOrWhiteSpace(seriesTvdbId) || !string.IsNullOrWhiteSpace(seriesImdbId) || !string.IsNullOrWhiteSpace(lookupTitle))
+            {
+                var foundShowId = await _client.FindShowIdAsync(clientId, profile.Token, seriesTvdbId, seriesImdbId, lookupTitle, seriesTmdbId).ConfigureAwait(false);
+                showId = foundShowId ?? 0;
+            }
+
+            if (showId > 0)
+            {
+                episodeId = await _client.FindEpisodeIdAsync(
+                    clientId,
+                    profile.Token,
+                    showId,
+                    seasonNum,
+                    episodeNum,
+                    episodeTvdbId).ConfigureAwait(false);
+            }
+        }
 
         if (!episodeId.HasValue)
         {
