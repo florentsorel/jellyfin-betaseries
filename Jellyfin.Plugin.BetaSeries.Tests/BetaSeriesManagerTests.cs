@@ -419,4 +419,131 @@ public class BetaSeriesManagerTests
         var postRequests = mockHandler.Requests.Where(r => r.Method == HttpMethod.Post).ToList();
         Assert.Single(postRequests);
     }
+
+    [Fact]
+    public async Task UserDataSaved_WhenSeriesOrSeasonItemDirectlyPassed_IsSafelyIgnored()
+    {
+        var profile = new BetaSeriesProfile
+        {
+            JellyfinUserIds = new[] { _userId },
+            Token = "token-123",
+            SyncUserDataSaved = true,
+            SyncShows = true,
+        };
+        SetupPlugin(profile);
+
+        var mockHandler = new MockHttpMessageHandler();
+        using var httpClient = new HttpClient(mockHandler);
+        var client = new BetaSeriesClient(httpClient, NullLogger<BetaSeriesClient>.Instance);
+
+        using var manager = new BetaSeriesManager(
+            NullLogger<BetaSeriesManager>.Instance,
+            _sessionManagerMock.Object,
+            _userDataManagerMock.Object,
+            _libraryManagerMock.Object,
+            client);
+
+        await manager.StartAsync(CancellationToken.None);
+
+        var series = new Series { Name = "Widow's Bay" };
+        var season = new Season { Name = "Saison 1" };
+
+        var seriesArgs = new UserDataSaveEventArgs
+        {
+            Item = series,
+            UserId = _userId,
+            SaveReason = UserDataSaveReason.TogglePlayed,
+            UserData = new UserItemData { Key = "test-key-series", Played = true },
+        };
+
+        var seasonArgs = new UserDataSaveEventArgs
+        {
+            Item = season,
+            UserId = _userId,
+            SaveReason = UserDataSaveReason.TogglePlayed,
+            UserData = new UserItemData { Key = "test-key-season", Played = true },
+        };
+
+        _userDataManagerMock.Raise(u => u.UserDataSaved += null, seriesArgs);
+        _userDataManagerMock.Raise(u => u.UserDataSaved += null, seasonArgs);
+
+        await Task.Delay(100);
+
+        // Neither Series nor Season entity directly triggers API calls,
+        // because Jellyfin dispatches individual UserDataSaved events for each child Episode.
+        Assert.Empty(mockHandler.Requests);
+    }
+
+    [Fact]
+    public async Task UserDataSaved_WhenMultipleEpisodesInSeasonOrSeriesMarked_SyncsEachEpisodeIndividually()
+    {
+        var profile = new BetaSeriesProfile
+        {
+            JellyfinUserIds = new[] { _userId },
+            Token = "token-123",
+            SyncUserDataSaved = true,
+            SyncShows = true,
+        };
+        SetupPlugin(profile);
+
+        var mockHandler = new MockHttpMessageHandler();
+        for (int i = 1; i <= 3; i++)
+        {
+            mockHandler.Setup(
+                HttpMethod.Get,
+                $"/episodes/display?thetvdb_id=100{i}",
+                HttpStatusCode.OK,
+                $"{{\"episode\":{{\"id\":200{i},\"title\":\"Ep {i}\"}}}}");
+            mockHandler.Setup(
+                HttpMethod.Post,
+                "/episodes/watched",
+                HttpStatusCode.OK,
+                $"{{\"episode\":{{\"id\":200{i},\"user\":{{\"seen\":true}}}}}}");
+        }
+
+        using var httpClient = new HttpClient(mockHandler);
+        var client = new BetaSeriesClient(httpClient, NullLogger<BetaSeriesClient>.Instance);
+
+        using var manager = new BetaSeriesManager(
+            NullLogger<BetaSeriesManager>.Instance,
+            _sessionManagerMock.Object,
+            _userDataManagerMock.Object,
+            _libraryManagerMock.Object,
+            client);
+
+        await manager.StartAsync(CancellationToken.None);
+
+        // When a season or series is marked as watched in Jellyfin, Jellyfin raises UserDataSaved for every episode
+        for (int i = 1; i <= 3; i++)
+        {
+            var ep = new Episode
+            {
+                Name = $"Ep {i}",
+                IndexNumber = i,
+                ParentIndexNumber = 1,
+            };
+            ep.ProviderIds["Tvdb"] = $"100{i}";
+
+            var args = new UserDataSaveEventArgs
+            {
+                Item = ep,
+                UserId = _userId,
+                SaveReason = UserDataSaveReason.TogglePlayed,
+                UserData = new UserItemData { Key = $"ep-key-{i}", Played = true },
+            };
+
+            _userDataManagerMock.Raise(u => u.UserDataSaved += null, args);
+        }
+
+        await Task.Delay(400);
+
+        // 3 lookups + 3 scrobbles = 6 requests
+        Assert.Equal(6, mockHandler.Requests.Count);
+        var postRequests = mockHandler.Requests.Where(r => r.Method == HttpMethod.Post).ToList();
+        Assert.Equal(3, postRequests.Count);
+        foreach (var req in postRequests)
+        {
+            Assert.Contains("bulk=false", req.Content);
+        }
+    }
 }
