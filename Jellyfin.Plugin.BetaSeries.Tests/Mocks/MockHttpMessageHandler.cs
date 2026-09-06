@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -22,10 +23,20 @@ public class CapturedRequest
 
 public class MockHttpMessageHandler : HttpMessageHandler
 {
+    private readonly object _lock = new();
     private readonly List<(Func<HttpRequestMessage, bool> Matcher, Func<HttpRequestMessage, Task<HttpResponseMessage>> Responder)> _routes = new();
     private readonly List<CapturedRequest> _capturedRequests = new();
 
-    public IReadOnlyList<CapturedRequest> Requests => _capturedRequests;
+    public IReadOnlyList<CapturedRequest> Requests
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _capturedRequests.ToList();
+            }
+        }
+    }
 
     public void Setup(
         HttpMethod method,
@@ -34,24 +45,32 @@ public class MockHttpMessageHandler : HttpMessageHandler
         string responseBody = "{}",
         string contentType = "application/json")
     {
-        _routes.Add((
-            req => req.Method == method && (req.RequestUri?.PathAndQuery.Contains(pathAndQueryContains, StringComparison.OrdinalIgnoreCase) ?? false),
-            _ =>
-            {
-                var response = new HttpResponseMessage(statusCode)
-                {
-                    Content = new StringContent(responseBody, Encoding.UTF8, contentType),
-                };
-                return Task.FromResult(response);
-            }
-        ));
+        lock (_lock)
+        {
+            _routes.Add((
+                req => req.Method == method && (req.RequestUri?.PathAndQuery.Contains(pathAndQueryContains, StringComparison.OrdinalIgnoreCase) ?? false),
+                _ => Task.FromResult(CreateResponseMessage(statusCode, responseBody, contentType))
+            ));
+        }
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Ownership of HttpResponseMessage is transferred to caller")]
+    private static HttpResponseMessage CreateResponseMessage(HttpStatusCode statusCode, string responseBody, string contentType)
+    {
+        return new HttpResponseMessage(statusCode)
+        {
+            Content = new StringContent(responseBody, Encoding.UTF8, contentType),
+        };
     }
 
     public void SetupCustom(
         Func<HttpRequestMessage, bool> matcher,
         Func<HttpRequestMessage, Task<HttpResponseMessage>> responder)
     {
-        _routes.Add((matcher, responder));
+        lock (_lock)
+        {
+            _routes.Add((matcher, responder));
+        }
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -62,13 +81,16 @@ public class MockHttpMessageHandler : HttpMessageHandler
             content = await request.Content.ReadAsStringAsync(cancellationToken);
         }
 
-        _capturedRequests.Add(new CapturedRequest
+        lock (_lock)
         {
-            Method = request.Method,
-            RequestUri = request.RequestUri,
-            Headers = request.Headers,
-            Content = content,
-        });
+            _capturedRequests.Add(new CapturedRequest
+            {
+                Method = request.Method,
+                RequestUri = request.RequestUri,
+                Headers = request.Headers,
+                Content = content,
+            });
+        }
 
         foreach (var (matcher, responder) in _routes)
         {

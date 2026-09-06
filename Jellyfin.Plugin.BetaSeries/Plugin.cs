@@ -29,6 +29,9 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     public override string Name => "BetaSeries";
 
     /// <inheritdoc />
+    public override string Description => "Automatically synchronize your movies, shows, seasons, and episodes watch status with your BetaSeries account.";
+
+    /// <inheritdoc />
     public override Guid Id => Guid.Parse("6e4dc05e-3c15-4691-95da-fac65c5c3713");
 
     /// <summary>

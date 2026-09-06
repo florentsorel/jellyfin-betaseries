@@ -41,6 +41,15 @@ public class BetaSeriesManagerTests
         PluginTestHelper.CreateMockPlugin(config);
     }
 
+    private static async Task WaitForRequestsAsync(MockHttpMessageHandler handler, int expectedCount, int timeoutMs = 3000)
+    {
+        var deadline = DateTime.UtcNow.AddMilliseconds(timeoutMs);
+        while (handler.Requests.Count < expectedCount && DateTime.UtcNow < deadline)
+        {
+            await Task.Delay(25);
+        }
+    }
+
     [Fact]
     public async Task StartAsync_And_StopAsync_ManageSubscriptionsProperly()
     {
@@ -97,7 +106,7 @@ public class BetaSeriesManagerTests
         _sessionManagerMock.Raise(s => s.PlaybackStopped += null, args);
 
         // Give async Task.Run time to complete
-        await Task.Delay(100);
+        await Task.Delay(150);
 
         Assert.Empty(mockHandler.Requests);
     }
@@ -139,7 +148,7 @@ public class BetaSeriesManagerTests
 
         _sessionManagerMock.Raise(s => s.PlaybackStopped += null, args);
 
-        await Task.Delay(100);
+        await Task.Delay(150);
 
         Assert.Empty(mockHandler.Requests);
     }
@@ -192,7 +201,7 @@ public class BetaSeriesManagerTests
 
         _sessionManagerMock.Raise(s => s.PlaybackStopped += null, args);
 
-        await Task.Delay(150);
+        await WaitForRequestsAsync(mockHandler, 2);
 
         // Should have made 1 lookup request and 1 post request
         Assert.Equal(2, mockHandler.Requests.Count);
@@ -253,7 +262,7 @@ public class BetaSeriesManagerTests
 
         _sessionManagerMock.Raise(s => s.PlaybackStopped += null, args);
 
-        await Task.Delay(150);
+        await WaitForRequestsAsync(mockHandler, 2);
 
         Assert.Equal(2, mockHandler.Requests.Count);
         var postRequest = mockHandler.Requests.FirstOrDefault(r => r.Method == HttpMethod.Post);
@@ -299,7 +308,7 @@ public class BetaSeriesManagerTests
 
         _userDataManagerMock.Raise(u => u.UserDataSaved += null, args);
 
-        await Task.Delay(100);
+        await Task.Delay(150);
 
         Assert.Empty(mockHandler.Requests);
     }
@@ -353,7 +362,7 @@ public class BetaSeriesManagerTests
 
         _userDataManagerMock.Raise(u => u.UserDataSaved += null, args);
 
-        await Task.Delay(150);
+        await WaitForRequestsAsync(mockHandler, 2);
 
         Assert.Equal(2, mockHandler.Requests.Count);
         var deleteRequest = mockHandler.Requests.FirstOrDefault(r => r.Method == HttpMethod.Delete);
@@ -412,6 +421,7 @@ public class BetaSeriesManagerTests
         _userDataManagerMock.Raise(u => u.UserDataSaved += null, args);
         _userDataManagerMock.Raise(u => u.UserDataSaved += null, args);
 
+        await WaitForRequestsAsync(mockHandler, 2);
         await Task.Delay(150);
 
         // Lookup: 1 request (cached on second attempt)
@@ -467,7 +477,7 @@ public class BetaSeriesManagerTests
         _userDataManagerMock.Raise(u => u.UserDataSaved += null, seriesArgs);
         _userDataManagerMock.Raise(u => u.UserDataSaved += null, seasonArgs);
 
-        await Task.Delay(100);
+        await Task.Delay(150);
 
         // Neither Series nor Season entity directly triggers API calls,
         // because Jellyfin dispatches individual UserDataSaved events for each child Episode.
@@ -535,7 +545,7 @@ public class BetaSeriesManagerTests
             _userDataManagerMock.Raise(u => u.UserDataSaved += null, args);
         }
 
-        await Task.Delay(400);
+        await WaitForRequestsAsync(mockHandler, 6);
 
         // 3 lookups + 3 scrobbles = 6 requests
         Assert.Equal(6, mockHandler.Requests.Count);
