@@ -4,6 +4,7 @@ guid: "6e4dc05e-3c15-4691-95da-fac65c5c3713"
 version: "1.0.0.0"
 targetAbi: "10.11.0.0"
 framework: "net9.0"
+imageUrl: "https://raw.githubusercontent.com/florentsorel/jellyfin-betaseries/master/Jellyfin.Plugin.BetaSeries/betaseries_cover.jpg"
 overview: "Automatically synchronize your movies and series with BetaSeries"
 description: >
   This plugin automatically synchronizes your movies, series, seasons, and episodes watch status

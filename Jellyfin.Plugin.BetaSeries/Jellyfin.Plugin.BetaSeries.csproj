@@ -11,7 +11,7 @@
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <Authors>Florent Sorel</Authors>
-    <Description>Synchronisez automatiquement vos visionnages de films, séries, saisons et épisodes avec votre compte BetaSeries.</Description>
+    <Description>Automatically synchronize your movies, shows, seasons, and episodes watch status with your BetaSeries account.</Description>
     <PackageProjectUrl>https://github.com/florentsorel/jellyfin-betaseries</PackageProjectUrl>
   </PropertyGroup>
 
