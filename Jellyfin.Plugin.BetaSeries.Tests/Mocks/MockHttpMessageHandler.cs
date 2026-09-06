@@ -49,16 +49,18 @@ public class MockHttpMessageHandler : HttpMessageHandler
         {
             _routes.Add((
                 req => req.Method == method && (req.RequestUri?.PathAndQuery.Contains(pathAndQueryContains, StringComparison.OrdinalIgnoreCase) ?? false),
-                _ =>
-                {
-                    var response = new HttpResponseMessage(statusCode)
-                    {
-                        Content = new StringContent(responseBody, Encoding.UTF8, contentType),
-                    };
-                    return Task.FromResult(response);
-                }
+                _ => Task.FromResult(CreateResponseMessage(statusCode, responseBody, contentType))
             ));
         }
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Ownership of HttpResponseMessage is transferred to caller")]
+    private static HttpResponseMessage CreateResponseMessage(HttpStatusCode statusCode, string responseBody, string contentType)
+    {
+        return new HttpResponseMessage(statusCode)
+        {
+            Content = new StringContent(responseBody, Encoding.UTF8, contentType),
+        };
     }
 
     public void SetupCustom(
