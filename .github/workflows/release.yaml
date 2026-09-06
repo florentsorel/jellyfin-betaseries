@@ -86,6 +86,10 @@ jobs:
           git config user.name "Florent Sorel"
           git config user.email "florent.sorel@gmail.com"
 
+          # Clean up any build artifacts modified by JPRM (e.g. Directory.Build.props)
+          git reset --hard HEAD
+          git clean -fd
+
           # Switch to master branch
           git fetch origin master
           git checkout master

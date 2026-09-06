@@ -13,7 +13,7 @@
         "changelog": "Initial release 1.0.0.0",
         "targetAbi": "10.11.0.0",
         "sourceUrl": "https://github.com/florentsorel/jellyfin-betaseries/releases/download/v1.0.0.0/jellyfin-plugin-betaseries_1.0.0.0.zip",
-        "checksum": "",
+        "checksum": "0817f8bed1f6602efe75b00585d583ee",
         "timestamp": "2026-09-06T10:00:00Z"
       }
     ]
