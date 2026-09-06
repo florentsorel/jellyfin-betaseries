@@ -90,10 +90,10 @@ jobs:
           git reset --hard HEAD
           git clean -fd
 
-          # Switch to master branch
+          # Switch to clean master branch
           git fetch origin master
-          git checkout master
-          git pull origin master --rebase
+          git checkout -B master origin/master
+
 
           # Update manifest.json
           node -e '
