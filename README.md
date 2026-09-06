@@ -82,7 +82,16 @@ Ce plugin pour **[Jellyfin](https://jellyfin.org)** synchronise automatiquement 
 
 ## 📦 Installation
 
-### Installation manuelle
+### Méthode 1 : Via le catalogue de dépôts Jellyfin (Recommandé)
+
+1. Dans votre interface Jellyfin, allez dans **Tableau de bord** > **Plugins** > onglet **Dépôts**.
+2. Cliquez sur le bouton **+** pour ajouter un nouveau dépôt :
+   - **Nom du dépôt :** `BetaSeries`
+   - **URL du dépôt :** `https://raw.githubusercontent.com/florentsorel/jellyfin-betaseries/master/manifest.json`
+3. Allez dans l'onglet **Catalogue**, sélectionnez **BetaSeries** et cliquez sur **Installer**.
+4. Redémarrez votre serveur Jellyfin.
+
+### Méthode 2 : Installation manuelle
 
 1. Rendez-vous sur la page des [Releases](https://github.com/florentsorel/jellyfin-betaseries/releases) et téléchargez la dernière version.
 2. Créez un dossier `BetaSeries` dans le répertoire des plugins de votre serveur Jellyfin :
