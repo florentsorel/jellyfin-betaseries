@@ -2,5 +2,13 @@
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
         "github>jellyfin/.github//renovate-presets/default"
+    ],
+    "packageRules": [
+        {
+            "matchPackagePatterns": [
+                "^Jellyfin\\."
+            ],
+            "groupName": "Jellyfin dependencies"
+        }
     ]
 }

@@ -24,25 +24,37 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Determine Version
+      - name: Determine Version and Metadata
         id: version_info
         run: |
           TAG="${{ github.event.inputs.tag || github.ref_name }}"
           VERSION="${TAG#v}"
+          eval "$(node -e '
+            const fs = require("fs");
+            const content = fs.readFileSync("build.yaml", "utf8");
+            const abiMatch = content.match(/^targetAbi:\s*["\x27]?([^"\x27\r\n]+)["\x27]?/m);
+            const fwMatch = content.match(/^framework:\s*["\x27]?([^"\x27\r\n]+)["\x27]?/m);
+            console.log("TARGET_ABI=" + (abiMatch ? abiMatch[1] : "10.11.0.0"));
+            console.log("FRAMEWORK=" + (fwMatch ? fwMatch[1] : "net9.0"));
+          ')"
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "target_abi=${TARGET_ABI}" >> $GITHUB_OUTPUT
+          echo "framework=${FRAMEWORK}" >> $GITHUB_OUTPUT
           echo "zip_name=jellyfin-plugin-betaseries_${VERSION}.zip" >> $GITHUB_OUTPUT
 
       - name: Setup .NET
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: |
+            9.0.x
+            10.0.x
 
       - name: Build Jellyfin Plugin with JPRM
         uses: oddstr13/jellyfin-plugin-repository-manager@9497a0a499416cc572ed2e07a391d9f943a37b4d # v1.1.1
         id: jprm
         with:
-          dotnet-target: 'net9.0'
+          dotnet-target: ${{ steps.version_info.outputs.framework }}
 
       - name: Prepare and Checksum Release Zip
         id: package
@@ -80,6 +92,7 @@ jobs:
         env:
           TAG: ${{ steps.version_info.outputs.tag }}
           VERSION: ${{ steps.version_info.outputs.version }}
+          TARGET_ABI: ${{ steps.version_info.outputs.target_abi }}
           MD5_HASH: ${{ steps.package.outputs.md5 }}
           ZIP_NAME: ${{ steps.version_info.outputs.zip_name }}
         run: |
@@ -101,6 +114,7 @@ jobs:
             const manifest = JSON.parse(fs.readFileSync("manifest.json", "utf8"));
             const version = process.env.VERSION;
             const tag = process.env.TAG;
+            const targetAbi = process.env.TARGET_ABI;
             const md5 = process.env.MD5_HASH;
             const zipName = process.env.ZIP_NAME;
             const timestamp = new Date().toISOString();
@@ -113,7 +127,7 @@ jobs:
             const entry = {
               version: version,
               changelog: `Release ${tag}`,
-              targetAbi: "10.11.0.0",
+              targetAbi: targetAbi,
               sourceUrl: repoUrl,
               checksum: md5,
               timestamp: timestamp
