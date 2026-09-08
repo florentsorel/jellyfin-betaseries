@@ -52,6 +52,8 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
                     "{0}.Configuration.configPage.html",
                     GetType().Namespace
                 ),
+                EnableInMainMenu = true,
+                DisplayName = "BetaSeries",
             },
         ];
     }
