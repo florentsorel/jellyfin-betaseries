@@ -24,6 +24,6 @@ jobs:
       actions: read
       contents: read
       security-events: write
-    uses: jellyfin/jellyfin-meta-plugins/.github/workflows/scan-codeql.yaml@d94f2eb79e9adf2735fda35c9c1dfbc5e726f1ec # master
+    uses: jellyfin/jellyfin-meta-plugins/.github/workflows/scan-codeql.yaml@6fe2b8eb26749491b497560fd6c54f6522e1e34f # master
     with:
       repository-name: florentsorel/jellyfin-betaseries
