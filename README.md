@@ -8,9 +8,11 @@
   <a href="https://github.com/florentsorel/jellyfin-betaseries/actions/workflows/test.yaml">
     <img src="https://github.com/florentsorel/jellyfin-betaseries/actions/workflows/test.yaml/badge.svg" alt="Test Status" />
   </a>
-  <img src="https://img.shields.io/badge/version-1.0.0.0-blue.svg" alt="Version 1.0.0.0" />
-  <img src="https://img.shields.io/badge/Jellyfin-%3E%3D%2010.9.0-purple.svg" alt="Jellyfin >= 10.9.0" />
-  <img src="https://img.shields.io/badge/.NET-9.0-512bd4.svg" alt=".NET 9.0" />
+  <a href="https://github.com/florentsorel/jellyfin-betaseries/releases">
+    <img src="https://img.shields.io/github/v/release/florentsorel/jellyfin-betaseries?color=blue&label=release" alt="Latest Release" />
+  </a>
+  <img src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/florentsorel/jellyfin-betaseries/master/build.yaml&query=$.targetAbi&label=Jellyfin&color=purple&prefix=%3E%3D%20" alt="Jellyfin Version" />
+  <img src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/florentsorel/jellyfin-betaseries/master/build.yaml&query=$.framework&label=.NET&color=512bd4" alt=".NET Version" />
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-GPL--3.0-green.svg" alt="License: GPL-3.0" />
   </a>
@@ -53,9 +55,18 @@ This plugin for **[Jellyfin](https://jellyfin.org)** automatically synchronizes 
 
 ---
 
-## ⚙️ Prerequisites
+## ⚙️ Compatibility & Prerequisites
 
-1. A **Jellyfin server 10.9.0 or higher** (running on .NET 9).
+### Compatibility Matrix
+
+| Plugin Version | Jellyfin Version | .NET Runtime | Branch / Status |
+| :--- | :--- | :--- | :--- |
+| **`2.x`** | **Jellyfin $\ge$ 12.0.0** | **.NET 10** | `master` (Current) |
+| **`1.x`** | Jellyfin 10.9.x - 10.11.x | .NET 9 | [`v1.x`](https://github.com/florentsorel/jellyfin-betaseries/tree/v1.x) (Maintenance) |
+
+### Prerequisites
+
+1. A compatible **Jellyfin server** (see compatibility matrix above).
 2. A **[BetaSeries](https://www.betaseries.com)** account.
 3. A BetaSeries API Key (Client ID) & Client Secret:
    - Go to **[https://www.betaseries.com/en/account/api](https://www.betaseries.com/en/account/api)**.
