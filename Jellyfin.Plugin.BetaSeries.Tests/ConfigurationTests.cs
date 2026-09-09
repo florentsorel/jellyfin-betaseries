@@ -180,4 +180,22 @@ public class ConfigurationTests
 
         Assert.Empty(charlieProfiles);
     }
+
+    [Fact]
+    public void Plugin_GetPages_IncludesMainMenuConfigurationPage()
+    {
+        var appPathsMock = new Moq.Mock<MediaBrowser.Common.Configuration.IApplicationPaths>();
+        appPathsMock.Setup(a => a.PluginsPath).Returns("/tmp");
+        var xmlSerializerMock = new Moq.Mock<MediaBrowser.Model.Serialization.IXmlSerializer>();
+        var plugin = new Plugin(appPathsMock.Object, xmlSerializerMock.Object);
+
+        var pages = plugin.GetPages().ToList();
+
+        Assert.Single(pages);
+        var page = pages[0];
+        Assert.Equal("BetaSeries", page.Name);
+        Assert.Equal("BetaSeries", page.DisplayName);
+        Assert.True(page.EnableInMainMenu);
+        Assert.Contains("Configuration.configPage.html", page.EmbeddedResourcePath, StringComparison.Ordinal);
+    }
 }

@@ -4,11 +4,13 @@ on:
   push:
     branches:
       - master
+      - v1.x
     paths-ignore:
       - '**/*.md'
   pull_request:
     branches:
       - master
+      - v1.x
     paths-ignore:
       - '**/*.md'
   workflow_dispatch:
