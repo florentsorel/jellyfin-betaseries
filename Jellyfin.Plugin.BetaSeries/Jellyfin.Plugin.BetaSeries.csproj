@@ -7,9 +7,9 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Nullable>enable</Nullable>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
-    <Version>2.0.0.0</Version>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.0.1.0</Version>
+    <AssemblyVersion>2.0.1.0</AssemblyVersion>
+    <FileVersion>2.0.1.0</FileVersion>
     <Authors>Florent Sorel</Authors>
     <Description>Automatically synchronize your movies, shows, seasons, and episodes watch status with your BetaSeries account.</Description>
     <PackageProjectUrl>https://github.com/florentsorel/jellyfin-betaseries</PackageProjectUrl>

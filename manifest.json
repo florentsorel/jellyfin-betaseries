@@ -10,11 +10,11 @@
     "versions": [
       {
         "version": "1.0.1.0",
-        "changelog": "- Add BetaSeries entry in left sidebar menu (Extensions)",
+        "changelog": "- feat(v1): add BetaSeries entry in left sidebar menu (Extensions)",
         "targetAbi": "10.11.0.0",
         "sourceUrl": "https://github.com/florentsorel/jellyfin-betaseries/releases/download/v1.0.1.0/jellyfin-plugin-betaseries_1.0.1.0.zip",
-        "checksum": "c5c160ae5d2977962698dda2d4c523a7",
-        "timestamp": "2026-09-09T07:31:56.764Z"
+        "checksum": "9a778fd15d3d5cc9c9beaab1f1d8149f",
+        "timestamp": "2026-09-09T08:39:05.933Z"
       },
       {
         "version": "1.0.0.0",
