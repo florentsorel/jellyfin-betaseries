@@ -54,6 +54,7 @@ jobs:
         uses: oddstr13/jellyfin-plugin-repository-manager@9497a0a499416cc572ed2e07a391d9f943a37b4d # v1.1.1
         id: jprm
         with:
+          version: ${{ steps.version_info.outputs.version }}
           dotnet-target: ${{ steps.version_info.outputs.framework }}
 
       - name: Prepare and Checksum Release Zip
