@@ -184,10 +184,7 @@ public class ConfigurationTests
     [Fact]
     public void Plugin_GetPages_IncludesMainMenuConfigurationPage()
     {
-        var appPathsMock = new Moq.Mock<MediaBrowser.Common.Configuration.IApplicationPaths>();
-        appPathsMock.Setup(a => a.PluginsPath).Returns("/tmp");
-        var xmlSerializerMock = new Moq.Mock<MediaBrowser.Model.Serialization.IXmlSerializer>();
-        var plugin = new Plugin(appPathsMock.Object, xmlSerializerMock.Object);
+        var plugin = PluginTestHelper.CreateMockPlugin();
 
         var pages = plugin.GetPages().ToList();
 
