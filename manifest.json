@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/florentsorel/jellyfin-betaseries/master/Jellyfin.Plugin.BetaSeries/betaseries_cover.jpg",
     "versions": [
       {
+        "version": "2.0.2.0",
+        "changelog": "- Update dependency Microsoft.NET.Test.Sdk to 18.10.1\n- Update jellyfin/jellyfin-meta-plugins digest to 8c80ef1\n- Update Jellyfin dependencies to 12.1.0",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/florentsorel/jellyfin-betaseries/releases/download/v2.0.2.0/jellyfin-plugin-betaseries_2.0.2.0.zip",
+        "checksum": "0840653154168e98b64f740e5afe1631",
+        "timestamp": "2026-09-16T10:46:04.970Z"
+      },
+      {
         "version": "2.0.1.0",
         "changelog": "- feat: add BetaSeries entry in left sidebar menu (Extensions)\n- Update jellyfin/jellyfin-meta-plugins digest to 6fe2b8e\n- ci: extract changelog automatically from release notes for manifest.json",
         "targetAbi": "12.0.0.0",
