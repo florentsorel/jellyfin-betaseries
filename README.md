@@ -61,7 +61,7 @@ This plugin for **[Jellyfin](https://jellyfin.org)** automatically synchronizes 
 
 | Plugin Version | Jellyfin Version | .NET Runtime | Branch / Status |
 | :--- | :--- | :--- | :--- |
-| **`2.x`** | **Jellyfin $\ge$ 12.0.0** | **.NET 10** | `master` (Current) |
+| **`12.x`** | **Jellyfin $\ge$ 12.0.0** | **.NET 10** | `master` (Current) |
 | **`1.x`** | Jellyfin 10.9.x - 10.11.x | .NET 9 | [`v1.x`](https://github.com/florentsorel/jellyfin-betaseries/tree/v1.x) (Maintenance) |
 
 ### Prerequisites
