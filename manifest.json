@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/florentsorel/jellyfin-betaseries/master/Jellyfin.Plugin.BetaSeries/betaseries_cover.jpg",
     "versions": [
       {
+        "version": "12.0.4.0",
+        "changelog": "- Update jellyfin/jellyfin-meta-plugins digest to 8eed318\n- Update dependency coverlet.collector to 10.1.0\n- Update dependency Moq to 4.21.0\n- Update jellyfin/jellyfin-meta-plugins digest to 8264ba0\n- Update jellyfin/jellyfin-meta-plugins digest to 5ebf9f9\n- Update Jellyfin dependencies to 12.2.0\n- Update dependency xunit.runner.visualstudio to 4.0.1 - autoclosed\n- Update dependency Microsoft.NET.Test.Sdk to 18.11.0\n- Update jellyfin/jellyfin-meta-plugins digest to 5f6990a\n- Update Jellyfin dependencies to 12.4.0\n- Update actions/setup-dotnet action to v6.1.0\n- chore: bump version to 12.0.4.0",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/florentsorel/jellyfin-betaseries/releases/download/v12.0.4.0/jellyfin-plugin-betaseries_12.0.4.0.zip",
+        "checksum": "94398bd7069feb00c3154cf546e9412c",
+        "timestamp": "2026-11-03T17:04:49.430Z"
+      },
+      {
         "version": "2.0.2.0",
         "changelog": "- Update dependency Microsoft.NET.Test.Sdk to 18.10.1\n- Update jellyfin/jellyfin-meta-plugins digest to 8c80ef1\n- Update Jellyfin dependencies to 12.1.0",
         "targetAbi": "12.0.0.0",
